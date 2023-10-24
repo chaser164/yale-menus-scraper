@@ -23,7 +23,7 @@ class All_prefs(APIView):
     
     def post(self, request):
         try:
-            new_pref = Pref(user = request.user, pref_string = request.data['pref_string'], college = request.data['college'], mealtime = request.data['mealtime'], day = request.data['day'])
+            new_pref = Pref(user = request.user, pref_string = request.data['pref_string'])
         except:
             return Response("invalid request body", status=HTTP_400_BAD_REQUEST)
         # Ensure the coordinates are accurate before saving into the database
