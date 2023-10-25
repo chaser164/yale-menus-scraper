@@ -14,7 +14,7 @@ from django.core.management.base import BaseCommand
 from pref_app.models import Pref
 from user_app.models import User
 
-LOAD_TIME = 1
+LOAD_TIME = 0.15
 
 menus = {
     ' BK':1,
@@ -37,7 +37,7 @@ class Command(BaseCommand):
         print("initiating update...")
         service = ChromeService(executable_path=ChromeDriverManager().install())
         chrome_options = Options()
-        chrome_options.add_argument("--headless=new")
+        # chrome_options.add_argument("--headless=new")
         driver = webdriver.Chrome(options=chrome_options, service=service)
 
         prefs = Pref.objects.all()
@@ -52,24 +52,48 @@ class Command(BaseCommand):
                 view_button.click()
                 # Allow time for the menu loading animation
                 driver.implicitly_wait(10)
-                breakfast_button = driver.find_element(By.ID, "gwt-uid-2")
+                breakfast_button = driver.find_element(By.ID, "gwt-uid-2") # might not always be here during weekends ... consider v-captiontext
                 dinner_button = driver.find_element(By.ID, "gwt-uid-3")
                 brunch_lunch_button = driver.find_element(By.ID, "gwt-uid-4")
             except:
-                print(f'Error accessing menu contents of{menu}')
+                print(f'timeout while entering{menu} menu')
                 return
 
             # Get breakfast page source   
             breakfast_button.click()
-            t.sleep(LOAD_TIME)
+            # Wait until menu contents loaded by checking for header presence
+            total = 0
+            while not '<title>Breakfast' in driver.page_source:
+                t.sleep(LOAD_TIME)
+                total += LOAD_TIME
+                if total > 10:
+                    print(f'timeout while retrieving Breakfast menu for{menu}')
+                    return
+                continue
             breakfast_page_source = driver.page_source
             # get brunch lunch page source
             brunch_lunch_button.click()
-            t.sleep(LOAD_TIME)
+            # Wait until menu contents loaded by checking for header presence
+            total = 0
+            while not '<title>Brunch and Lunch' in driver.page_source:
+                t.sleep(LOAD_TIME)
+                total += LOAD_TIME
+                if total > 10:
+                    print(f'timeout while retrieving Brunch/Lunch menu for{menu}')
+                    return
+                continue
             brunch_lunch_page_source = driver.page_source
             # Get dinner page source
             dinner_button.click()
-            t.sleep(LOAD_TIME)
+            # Wait until menu contents loaded by checking for header presence
+            total = 0
+            while not '<title>Dinner' in driver.page_source:
+                t.sleep(LOAD_TIME)
+                total += LOAD_TIME
+                if total > 10:
+                    print(f'timeout while retrieving Dinner menu for{menu}')
+                    return
+                continue
             dinner_page_source = driver.page_source
             
             for pref in prefs:
