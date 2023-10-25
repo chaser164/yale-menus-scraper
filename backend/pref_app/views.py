@@ -27,7 +27,6 @@ class All_prefs(APIView):
         except:
             return Response("invalid request body", status=HTTP_400_BAD_REQUEST)
         # Ensure the coordinates are accurate before saving into the database
-        new_pref.full_clean()
         new_pref.save()
         return Response(PrefSerializer(new_pref).data, status=HTTP_201_CREATED)
         

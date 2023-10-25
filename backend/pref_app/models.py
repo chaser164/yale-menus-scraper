@@ -5,5 +5,6 @@ from user_app.models import User
 class Pref(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='prefs')
     pref_string = models.CharField(max_length=300)
-    colleges = models.CharField(max_length=42, blank=True, null=True)
-    mealtimes = models.CharField(max_length=20, blank=True, null=True)
+    breakfast = models.CharField(max_length=50, default = "")
+    brunch_lunch = models.CharField(max_length=50, default = "")
+    dinner = models.CharField(max_length=50, default = "")
