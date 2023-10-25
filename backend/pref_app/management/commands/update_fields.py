@@ -74,13 +74,13 @@ class Command(BaseCommand):
             
             for pref in prefs:
                 # Add breakfast data
-                if re.search(rf'>[^<]*{pref.pref_string}[^>]*<', breakfast_page_source):
+                if re.search(rf'>[^<]*{pref.pref_string}[^>]*<', breakfast_page_source, re.IGNORECASE):
                     pref.breakfast += menu
                 # Add brunch/lunch data
-                if re.search(rf'>[^<]*{pref.pref_string}[^>]*<', brunch_lunch_page_source):
+                if re.search(rf'>[^<]*{pref.pref_string}[^>]*<', brunch_lunch_page_source, re.IGNORECASE):
                     pref.brunch_lunch += menu
                 # Add dinner data
-                if re.search(rf'>[^<]*{pref.pref_string}[^>]*<', dinner_page_source):
+                if re.search(rf'>[^<]*{pref.pref_string}[^>]*<', dinner_page_source, re.IGNORECASE):
                     pref.dinner += menu
                 pref.save()
             print(f'{menu[1:]} data added...')
