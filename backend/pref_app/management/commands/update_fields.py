@@ -127,11 +127,11 @@ class Command(BaseCommand):
         with smtplib.SMTP('smtp.gmail.com', 587) as server:
             server.starttls()
             load_dotenv()
-            server.login('yalemenusreadout@gmail.com', os.getenv('APP_PASSWORD'))
+            server.login('yalemenusscraper@gmail.com', os.getenv('APP_PASSWORD'))
             for user in users:
                 msg = MIMEMultipart()
                 msg['Subject'] = f'YOUR {datetime.now().month}/{datetime.now().day} YALE MENUS SCRAPE'
-                msg['From'] = 'yalemenusreadout@gmail.com'
+                msg['From'] = 'yalemenusscraper@gmail.com'
                 msg['To'] = "creynders22@gmail.com"
 
                 # Attach the text
