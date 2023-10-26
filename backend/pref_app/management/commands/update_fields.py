@@ -3,6 +3,7 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import time as t
+from datetime import datetime
 import os
 from dotenv import load_dotenv
 from selenium import webdriver
@@ -35,9 +36,13 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         print("initiating update...")
-        service = ChromeService(executable_path=ChromeDriverManager().install())
+        try:
+            service = ChromeService(executable_path=ChromeDriverManager().install())
+        except:
+            print("Offline. Exiting.")
+            return
         chrome_options = Options()
-        # chrome_options.add_argument("--headless=new")
+        chrome_options.add_argument("--headless=new")
         driver = webdriver.Chrome(options=chrome_options, service=service)
 
         prefs = Pref.objects.all()
@@ -57,6 +62,7 @@ class Command(BaseCommand):
                 brunch_lunch_button = driver.find_element(By.ID, "gwt-uid-4")
             except:
                 print(f'timeout while entering{menu} menu')
+                driver.quit()
                 return
 
             # Get breakfast page source   
@@ -68,6 +74,7 @@ class Command(BaseCommand):
                 total += LOAD_TIME
                 if total > 10:
                     print(f'timeout while retrieving Breakfast menu for{menu}')
+                    driver.quit()
                     return
                 continue
             breakfast_page_source = driver.page_source
@@ -80,6 +87,7 @@ class Command(BaseCommand):
                 total += LOAD_TIME
                 if total > 10:
                     print(f'timeout while retrieving Brunch/Lunch menu for{menu}')
+                    driver.quit()
                     return
                 continue
             brunch_lunch_page_source = driver.page_source
@@ -92,6 +100,7 @@ class Command(BaseCommand):
                 total += LOAD_TIME
                 if total > 10:
                     print(f'timeout while retrieving Dinner menu for{menu}')
+                    driver.quit()
                     return
                 continue
             dinner_page_source = driver.page_source
@@ -113,77 +122,98 @@ class Command(BaseCommand):
         print('fields update complete!')
         
         # EMAIL SEND
+        print("initiating email sendouts...")
         users = User.objects.all()
-        
+        with smtplib.SMTP('smtp.gmail.com', 587) as server:
+            server.starttls()
+            load_dotenv()
+            server.login('yalemenusreadout@gmail.com', os.getenv('APP_PASSWORD'))
+            for user in users:
+                msg = MIMEMultipart()
+                msg['Subject'] = f'YOUR {datetime.now().month}/{datetime.now().day} YALE MENUS SCRAPE'
+                msg['From'] = 'yalemenusreadout@gmail.com'
+                msg['To'] = "creynders22@gmail.com"
 
-        msg = MIMEMultipart()
-        msg['Subject'] = 'Today\'s Yale Menus Readout'
-        msg['From'] = 'yalemenusreadout@gmail.com'
-        msg['To'] = "creynders22@gmail.com"
+                # Attach the text
+                text = MIMEText(build_message_html(user.prefs), 'html')
+                msg.attach(text)
+                try:
+                    server.send_message(msg)
+                    print(f"Email to {user.email} sent successfully")
+                except:
+                    print(f"Error sending email for {user.email}")
+        print("All emails sent!")
 
-        # HTML content for the email body
-        html_body = f"""
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>My Web Page</title>
-            <style>
-                .big-blue-button {{
-                    display: inline-block;
-                    padding: 15px 30px;
-                    background-color: #a8dcff;
-                    color: white;
-                    text-decoration: none;
-                    border: none;
-                    border-radius: 8px;
-                    font-size: 18px;
-                    font-weight: bold;
-                }}
 
-                .big-blue-button:hover {{
-                    background-color: #7dc2f3;
-                }}
-            </style>
-        </head>
-        <body>
-            <table width="100%" border="0" cellspacing="0" cellpadding="0">
-                <tr>
-                    <td align="center">
-                        <h1>Welcome to GutCheck!</h1>
-                        <h2>Please click the button to confirm your email:</h2>
-                    </td>
-                </tr>
-                <tr>
-                    <td align="center">
-                        <p>hello</p>
-                    </td>
-                </tr>
-            </table>
-        </body>
-        </html>
+def build_message_html(user_prefs):
+    colleges = {
+        'BK':'Berkeley ',
+        'BR':'Branford ',
+        'SB':'Saybrook ',
+        'DP':'Davenport ',
+        'ES':'Stiles ',
+        'MO':'Morse ',
+        'BF':'Franklin ',
+        'PM':'Murray ',
+        'GH':'Hopper ',
+        'JE':'JE ',
+        'PS':'Pierson ',
+        'SM':'Silliman ',
+        'TD':'TD ',
+        'TB':'Trumbull '
+    }
+    all_results = ''
+    for pref in user_prefs.all():
+        found_anywhere = False
+        result = f"""<div style="text-align: left; font-size: large;">Results for <b>"{pref.pref_string}"</b>:</div> <br>
+        <table width="50%" cellspacing="0" cellpadding="0">
+            <tr>
+                <td align="center">
+                    <div style="text-align: right;">
         """
-        # Attach the HTML content to the email message
-        html_part = MIMEText(html_body, "html")
-        msg.attach(html_part)
+        for col in colleges:
+            found_in_college = False
+            col_string = colleges[col]
+            if col in pref.breakfast:
+                found_in_college = True
+                col_string += '⏰'
+            else:
+                col_string += '&nbsp;&nbsp;'
+            if col in pref.brunch_lunch:
+                found_in_college = True
+                col_string += '☀️'
+            else:
+                col_string += '&nbsp;&nbsp;'
+            if col in pref.dinner:
+                found_in_college = True
+                col_string += '🌙'
+            else:
+                col_string += '&nbsp;&nbsp;'
+            # Ensure found in college
+            if found_in_college:
+                found_anywhere = True
+                result += col_string + '<br>'
+        if found_anywhere:
+            all_results += result + '</div></td></tr></table><br><br><br><br><hr><br>'
+        else:
+            all_results += f'<div style="text-align: left; font-size: large;">No results for <b>"{pref.pref_string}"</b></div><br><br><br><hr><br>'
 
-        # Send the message via our own SMTP server.
-        smtp_server = 'smtp.gmail.com'
-        smtp_port = 587
-
-        username = 'yalemenusreadout@gmail.com'
-        # app-specific password, per google's requirements (stored in .env file)
-        load_dotenv()
-        password = os.getenv('APP_PASSWORD')
-
-        try:
-            with smtplib.SMTP(smtp_server, smtp_port) as server:
-                server.starttls()
-                server.login(username, password)
-                server.send_message(msg)
-            print("Email sent successfully!")
-            # Only save database upon successful email send
-        except Exception as e:
-            print(e)
-            print("Error sending email")
+    return f"""
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body style="font-family: monospace, monospace;">
+        <div style="text-align: left;">
+            ⏰  =  Appears in <b>breakfast menu</b><br>
+            ☀️  = Appears in <b>brunch/lunch menu</b><br>
+            🌙  = Appears in <b>dinner menu</b><br>
+            <br><br><br>
+            <hr>
+        </div>
+        {all_results}
+    </body>
+    </html>
+    """
