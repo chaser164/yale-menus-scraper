@@ -134,7 +134,7 @@ class Command(BaseCommand):
                 msg['From'] = 'yalemenusscraper@gmail.com'
                 msg['To'] = "creynders22@gmail.com"
 
-                # Attach the text
+                # Attach the html
                 text = MIMEText(build_message_html(user.prefs), 'html')
                 msg.attach(text)
                 try:
