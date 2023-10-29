@@ -1,0 +1,41 @@
+body {
+  justify-content: center;
+}
+
+nav {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.navbar-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+a {
+  font-size: large;
+  width: 70px;
+  color: wheat;
+}
+
+a:hover {
+  color: rgb(60, 70, 255);
+}
+
+
+#app {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+#app form {
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin: 20vh;
+}
+

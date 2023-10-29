@@ -38,8 +38,8 @@ class Log_in(APIView):
         password = request.data.get("password")
         user = authenticate(username=email, password=password)
         if user:
-            token, created = Token.objects.get_or_create(user=user)
-            return Response({"token": token.key, "user": user.email})
+            token, _ = Token.objects.get_or_create(user=user)
+            return Response({"token": token.key, "user": UserSerializer(user).data})
         else:
             return Response("No user matching credentials", status=HTTP_404_NOT_FOUND)
 
