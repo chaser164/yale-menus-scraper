@@ -1,4 +1,8 @@
-Yale Menus Readout
+Yale Menus Scraper
 
 todo:
-account for possibility of lack of breakfast
+- Work on email confirmation (just send a 6 digit code it's easier...)
+- Allow account deletion
+- updating/deleting prefs
+- cookie auth
+- writing out API endpoints
