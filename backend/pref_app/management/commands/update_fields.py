@@ -51,40 +51,37 @@ class Command(BaseCommand):
                 view_button.click()
                 # Allow time for the menu loading animation
                 driver.implicitly_wait(10)
-                breakfast_button = driver.find_element(By.ID, "gwt-uid-2") # might not always be here during weekends ... consider v-captiontext
-                dinner_button = driver.find_element(By.ID, "gwt-uid-3")
-                brunch_lunch_button = driver.find_element(By.ID, "gwt-uid-4")
+                meals = driver.find_elements(By.CLASS_NAME, "v-captiontext")
+                if len(meals) == 3:
+                    breakfast_button = meals[0]
+                    dinner_button = meals[1]
+                    brunch_lunch_button = meals[2]
+                else:
+                    breakfast_button = None
+                    dinner_button = meals[0]
+                    brunch_lunch_button = meals[1]
             except:
                 print(f'timeout while entering{menu} menu')
                 driver.quit()
                 return
 
-            # Get breakfast page source   
-            breakfast_button.click()
-            # Wait until menu contents loaded by checking for header presence
-            total = 0
-            while not '<title>Breakfast' in driver.page_source:
-                t.sleep(LOAD_TIME)
-                total += LOAD_TIME
-                if total > 10:
-                    print(f'timeout while retrieving Breakfast menu for{menu}')
-                    driver.quit()
-                    return
-                continue
-            breakfast_page_source = driver.page_source
-            # get brunch lunch page source
-            brunch_lunch_button.click()
-            # Wait until menu contents loaded by checking for header presence
-            total = 0
-            while not '<title>Brunch and Lunch' in driver.page_source:
-                t.sleep(LOAD_TIME)
-                total += LOAD_TIME
-                if total > 10:
-                    print(f'timeout while retrieving Brunch/Lunch menu for{menu}')
-                    driver.quit()
-                    return
-                continue
-            brunch_lunch_page_source = driver.page_source
+            # Account for optionality of breakfast
+            if breakfast_button != None:
+                # Get breakfast page source   
+                breakfast_button.click()
+                # Wait until menu contents loaded by checking for header presence
+                total = 0
+                while not '<title>Breakfast' in driver.page_source:
+                    t.sleep(LOAD_TIME)
+                    total += LOAD_TIME
+                    if total > 10:
+                        print(f'timeout while retrieving Breakfast menu for{menu}')
+                        driver.quit()
+                        return
+                    continue
+                breakfast_page_source = driver.page_source
+            else:
+                breakfast_page_source = ""
             # Get dinner page source
             dinner_button.click()
             # Wait until menu contents loaded by checking for header presence
@@ -98,6 +95,19 @@ class Command(BaseCommand):
                     return
                 continue
             dinner_page_source = driver.page_source
+            # get brunch lunch page source
+            brunch_lunch_button.click()
+            # Wait until menu contents loaded by checking for header presence
+            total = 0
+            while not '<title>Brunch and Lunch' in driver.page_source:
+                t.sleep(LOAD_TIME)
+                total += LOAD_TIME
+                if total > 10:
+                    print(f'timeout while retrieving Brunch/Lunch menu for{menu}')
+                    driver.quit()
+                    return
+                continue
+            brunch_lunch_page_source = driver.page_source
             
             for pref in prefs:
                 # Add breakfast data
