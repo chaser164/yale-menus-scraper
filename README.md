@@ -5,7 +5,6 @@
 - Allow account deletion
 - updating/deleting prefs
 - cookie auth
-- writing out API endpoints
 
 ## **API ENDPOINTS**
 
@@ -22,7 +21,7 @@
 ### **api/v1/users/logout/**
 + __POST__ log out a user
 ### **api/v1/users/admin-signup/**
-+ __POST__ log in a user
++ __POST__ sign up an admin user
 ### **api/v1/users/**
 + __GET__ returns info about all users
 ### **api/v1/users/me/**
