@@ -6,13 +6,14 @@ import { api } from "../utilities.jsx";
 export const RegisterPage = () => {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordConf, setPasswordConf] = useState("");
   const { setUser } = useContext(userContext);
   const navigate = useNavigate();
 
 
   const signUp = async (e) => {
     e.preventDefault();
-    let response = await api.post("users/register/", {
+    let response = await api.post("users/signup/", {
       email: userName,
       password: password,
     });
@@ -47,8 +48,8 @@ export const RegisterPage = () => {
         className="field"
         placeholder="confirm password"
         type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
+        value={passwordConf}
+        onChange={(e) => setPasswordConf(e.target.value)}
       />
       <br />
       <input className="styled-button" type="submit" />
