@@ -22,11 +22,11 @@ class Sign_up(APIView):
     
     def post(self, request):
         request.data["username"] = request.data["email"]
-        # try:
-        user = User.objects.create_user(**request.data)
-        user.send_verification_email()
-        # except:
-        #     return Response("Email already in use", status=HTTP_400_BAD_REQUEST)
+        try:
+            user = User.objects.create_user(**request.data)
+            user.send_verification_email()
+        except:
+            return Response("Email already in use", status=HTTP_400_BAD_REQUEST)
         token = Token.objects.create(user=user)
         return Response(
             {"user": user.username, "token": token.key}, status=HTTP_201_CREATED
@@ -102,3 +102,24 @@ class A_user(APIView):
         else:
             return Response("Admin access only", status=HTTP_401_UNAUTHORIZED)
         
+
+class Validate(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+   
+    def post(self, request):
+        code = request.data["code"]
+        message = request.user.check_code(code)
+        is_valid = message == "valid code"
+        return Response(
+            {"message": message, "is_valid": is_valid}
+        )
+    
+class Resend(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+   
+    def post(self, request):
+        return Response(
+            {"message": request.user.send_verification_email()}
+        )

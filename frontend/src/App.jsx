@@ -13,6 +13,7 @@ function App() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [hasLoaded, setHasLoaded] = useState(false);
+  const [verified, setVerified] = useState(false);
 
   const whoAmI = async () => {
     // Check if a token is stored in the localStorage
@@ -24,15 +25,19 @@ function App() {
       let response = await api.get("users/me");
       // Check if the response contains the user data (email field exists)
       if (response.data.email) {
+        // Enable verification if it's verified
+        setVerified(response.data.is_verified);
+        console.log("verified? ")
+        console.log(response.data.is_verified)
         // Set the user data in the context or state (assuming `setUser` is a state update function)
         setUser(response.data);
         // If the user is authenticated and there is a stored lastVisited page,
         // navigate to the lastVisited page; otherwise, navigate to the default homepage "/home"
-        if (lastVisited.current) {
-          navigate(lastVisited.current);
-        } else {
+        // if (lastVisited.current) {
+        //   navigate(lastVisited.current);
+        // } else {
           navigate("/");
-        }
+        // }
       }
     } else {
       // If no token is found, navigate to the login page
@@ -42,6 +47,7 @@ function App() {
   };
 
   // This useEffect block runs once when the component mounts (due to the empty dependency array [])
+  // Also runs whenever verified is updated
   // It calls the whoAmI function to check the user's authentication status and perform redirection accordingly
   useEffect(() => {
     whoAmI();
@@ -90,7 +96,7 @@ function App() {
           </nav>
         </header>
       </div>
-      <userContext.Provider value={{ user, setUser }}>
+      <userContext.Provider value={{ user, setUser, verified, setVerified }}>
         <Outlet />
       </userContext.Provider>
     </div>)

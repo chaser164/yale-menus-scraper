@@ -24,9 +24,20 @@ class User(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = [] # Email & Password are required by default.
 
+    def check_code(self, code):
+        if User.hash(code) != self.verification:
+            return "invalid code"
+        elif self.is_expired():
+            return "expired code"
+        else:
+            self.verification = "verified"
+            self.save()
+            return "valid code"
+        
+
     def is_expired(self):
         current_time = timezone.now()
-        time_difference = current_time - self.created_at
+        time_difference = current_time - self.timestamp
         return time_difference.total_seconds() > EXPIRATION_TIME
     
     # Sends email with 6 digit code
@@ -36,8 +47,6 @@ class User(AbstractUser):
         with smtplib.SMTP('smtp.gmail.com', 587) as server:
             server.starttls()
             load_dotenv()
-            print("\n\n***")
-            print(os.getenv('APP_PASSWORD'))
             server.login('yalemenusscraper@gmail.com', os.getenv('APP_PASSWORD'))
             msg = MIMEMultipart()
             msg['Subject'] = f'Yale Menus Scrape Verification Email'
@@ -48,11 +57,11 @@ class User(AbstractUser):
             msg.attach(text)
             try:
                 server.send_message(msg)
-                print(f"Email to {self.email} sent successfully")
                 self.timestamp = timezone.now()
                 self.save()
+                return "Email to {self.email} sent successfully"
             except:
-                print(f"Error sending email for {self.email}")
+                return f"Error sending email to {self.email}"
 
     def generate_code(self):
         # Generate code

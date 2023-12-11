@@ -17,6 +17,7 @@ export const RegisterPage = () => {
       email: userName,
       password: password,
     });
+    console.log(response.data)
     let user = response.data.user;
     let token = response.data.token;
     // Store the token securely (e.g., in localStorage or HttpOnly cookies)

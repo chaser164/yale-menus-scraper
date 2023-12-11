@@ -58,7 +58,24 @@ ol li a {
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
+.styled-button-wide {
+  align-self: center;
+  font-weight: bolder;
+  padding: 10px;
+  width: 150px;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  background-color: rgb(76, 76, 76);
+  color: whitesmoke;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
 .styled-button:hover {
+  cursor: pointer;
+  background-color: rgb(109, 109, 109);
+}
+
+.styled-button-wide:hover {
   cursor: pointer;
   background-color: rgb(109, 109, 109);
 }
