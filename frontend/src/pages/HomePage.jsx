@@ -4,7 +4,7 @@ import { userContext } from "../App";
 
 export const HomePage = () => {
   const [code, setCode] = useState("");
-  const [message, setMessage] = useState("Check Inbox for Verification Code");
+  const [message, setMessage] = useState("");
   const { user, verified, setVerified } = useContext(userContext);
 
   const validate = async (e) => {
@@ -12,12 +12,8 @@ export const HomePage = () => {
     let response = await api.post("users/validate/", {
       code: code,
     });
-    console.log(response.data.message)
     setMessage(response.data.message)
     if(response.data.is_valid) {
-      console.log("verified updating to true...")
-      console.log(user.email)
-      console.log(user)
       setVerified(true);
     }
   };
@@ -28,26 +24,28 @@ export const HomePage = () => {
   }; 
 
   return (
-    (!verified && !user.email) ? 
-    <>
-      <form onSubmit={(e) => validate(e)}>
-        <h3 className="white-font">Enter Verification Code Sent to Email:</h3>
-        <input
-          className="field"
-          placeholder="Code"
-          type="text"
-          value={code}
-          onChange={(e) => setCode(e.target.value)}
-        />
-        <br />
-        <input className="styled-button" type="submit" />
-      <p className="white-font">{message}</p>
-      </form>
-      <button onClick={resend} className="styled-button-wide">Resend email</button>
-    </>
-    :
-    <div>
-      <h1 className="white-font">Welcome {user ? user.email : null}</h1>
-    </div>
+    user && (
+      !verified ? 
+      <>
+        <form onSubmit={(e) => validate(e)}>
+          <h3 className="white-font">Enter Verification Code Sent to Email:</h3>
+          <input
+            className="field"
+            placeholder="Code"
+            type="text"
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+          />
+          <br />
+          <input className="styled-button" type="submit" />
+        <p className="white-font">{message}</p>
+        </form>
+        <button onClick={resend} className="styled-button-wide">Resend email</button>
+      </>
+      :
+      <div>
+        <h3 className="white-font">Your Food Items:</h3>
+      </div>
+    )
   );
 };

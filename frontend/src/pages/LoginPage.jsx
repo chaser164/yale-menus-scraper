@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 export const LoginPage = () => {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
-  const { setUser } = useContext(userContext);
+  const { setUser, setVerified } = useContext(userContext);
   const navigate = useNavigate();
 
   const logIn = async (e) => {
@@ -19,6 +19,7 @@ export const LoginPage = () => {
     let user = response.data.user;
     localStorage.setItem("token", token);
     api.defaults.headers.common["Authorization"] = `Token ${token}`;
+    setVerified(user.is_verified);
     setUser(user);
     navigate("/");
   };

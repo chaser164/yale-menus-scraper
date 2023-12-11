@@ -29,7 +29,7 @@ class Sign_up(APIView):
             return Response("Email already in use", status=HTTP_400_BAD_REQUEST)
         token = Token.objects.create(user=user)
         return Response(
-            {"user": user.username, "token": token.key}, status=HTTP_201_CREATED
+            {"token": token.key, "user": UserSerializer(user).data}, status=HTTP_201_CREATED
         )
     
 class Log_in(APIView):

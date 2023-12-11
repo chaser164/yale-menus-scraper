@@ -27,17 +27,15 @@ function App() {
       if (response.data.email) {
         // Enable verification if it's verified
         setVerified(response.data.is_verified);
-        console.log("verified? ")
-        console.log(response.data.is_verified)
         // Set the user data in the context or state (assuming `setUser` is a state update function)
         setUser(response.data);
         // If the user is authenticated and there is a stored lastVisited page,
         // navigate to the lastVisited page; otherwise, navigate to the default homepage "/home"
-        // if (lastVisited.current) {
-        //   navigate(lastVisited.current);
-        // } else {
+        if (lastVisited.current) {
+          navigate(lastVisited.current);
+        } else {
           navigate("/");
-        // }
+        }
       }
     } else {
       // If no token is found, navigate to the login page
@@ -71,6 +69,8 @@ function App() {
       delete api.defaults.headers.common["Authorization"];
       // set the user using with useContext to allow all other pages that need user information
       setUser(null);
+      // set verified to false after logout
+      setVerified(false);
       navigate("/login");
     }
   };
