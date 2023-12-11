@@ -19,6 +19,7 @@ class All_prefs(APIView):
 
     def get(self, request):
         allSerializedPosts = PrefSerializer(Pref.objects.filter(user = request.user), many=True).data
+        print(allSerializedPosts)
         return Response(allSerializedPosts)
     
     def post(self, request):

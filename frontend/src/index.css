@@ -70,6 +70,18 @@ ol li a {
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
+.styled-button-small{
+  align-self: center;
+  font-weight: bolder;
+  padding: 5px;
+  width: 60px;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  background-color: rgb(76, 76, 76);
+  color: whitesmoke;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
 .styled-button:hover {
   cursor: pointer;
   background-color: rgb(109, 109, 109);
@@ -78,6 +90,18 @@ ol li a {
 .styled-button-wide:hover {
   cursor: pointer;
   background-color: rgb(109, 109, 109);
+}
+
+.styled-button-small:hover {
+  cursor: pointer;
+  background-color: rgb(109, 109, 109);
+}
+
+.new-pref-container {
+  width: 355px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
 }
 
 
