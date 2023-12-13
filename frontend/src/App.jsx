@@ -86,7 +86,7 @@ function App() {
           <nav>
             {user ? 
               <>
-                <button className="styled-button" onClick={logOut}>Log out</button>
+                <button className="styled-button" onClick={logOut}>Log Out</button>
               </> :
               <>
                 <Link to="/signup">Sign Up</Link>

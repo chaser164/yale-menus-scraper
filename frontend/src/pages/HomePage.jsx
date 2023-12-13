@@ -39,6 +39,13 @@ export const HomePage = () => {
     await api.post("users/resend/");
   }; 
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      addPref();
+    }
+  };
+
   const addPref = async () => {
     // Update user list
     await api.post("prefs/", {
@@ -79,13 +86,15 @@ export const HomePage = () => {
       </>
       :
       <div>
-        <h3 className="white-font">
-        Every day at 6AM EST, I will run a (case insensitive) 
-        scrape of every Yale residential college dining hall menu. 
-        You will then receive a personalized email digest detailing 
-        which dining halls contain your specified food items. You will be notified
-        about whatever is included in the list below!
-        </h3>
+        <h4 className="grey-font">
+          Every day at 6AM EST, I will run a (case insensitive) 
+          scrape of every Yale residential college dining hall menu. 
+          You will then receive a personalized email digest detailing 
+          which of your specified food items are present in the day's menus.
+        </h4>
+        <h2 className="white-font">
+          Your Food Items:
+        </h2>
         <ul>
           {prefsList.map((pref, index) => (
             <li className="white-font" key={index}>
@@ -109,6 +118,7 @@ export const HomePage = () => {
               placeholder="New Food Preference"
               type="text"
               value={newPref}
+              onKeyDown={handleKeyDown}
               onChange={(e) => setNewPref(e.target.value)}
             />
             <button onClick={addPref} className="styled-button-small">Save</button>
