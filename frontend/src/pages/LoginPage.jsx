@@ -25,18 +25,18 @@ export const LoginPage = () => {
   };
 
   return (
-    <form onSubmit={(e) => logIn(e)}>
+    <form onSubmit={(e) => logIn(e)} autoComplete="on">
       <h3 className="white-font">Log In</h3>
       <input
         className="field"
-        placeholder="email"
+        placeholder="Email"
         type="email"
         value={userName}
         onChange={(e) => setUserName(e.target.value)}
       />
       <input
         className="field"
-        placeholder="password"
+        placeholder="Password"
         type="password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}

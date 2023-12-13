@@ -29,25 +29,25 @@ export const RegisterPage = () => {
   };
 
   return (
-    <form onSubmit={(e) => signUp(e)}>
+    <form onSubmit={(e) => signUp(e)} autoComplete="on">
       <h3 className="white-font">Sign Up</h3>
       <input
         className="field"
-        placeholder="email"
+        placeholder="Email"
         type="email"
         value={userName}
         onChange={(e) => setUserName(e.target.value)}
       />
       <input
         className="field"
-        placeholder="password"
+        placeholder="Password"
         type="password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
       <input
         className="field"
-        placeholder="confirm password"
+        placeholder="Confirm Password"
         type="password"
         value={passwordConf}
         onChange={(e) => setPasswordConf(e.target.value)}

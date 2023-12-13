@@ -1,9 +1,10 @@
 import { api } from "../utilities.jsx";
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect, useRef } from "react";
 import { userContext } from "../App";
 
 export const HomePage = () => {
   const { user, verified, setVerified } = useContext(userContext);
+  const foodItemInput = useRef(null);
   const [code, setCode] = useState("");
   const [message, setMessage] = useState("");
   const [prefsList, setPrefsList] = useState(["hi"]);
@@ -23,6 +24,12 @@ export const HomePage = () => {
       getPrefs();
   }, []);
 
+  useEffect(() => {
+    // Focus on the text input when showAdd is true
+    if (showAdd) {
+      foodItemInput.current.focus();
+    }
+  }, [showAdd]);
 
   const validate = async (e) => {
     e.preventDefault();
@@ -63,7 +70,6 @@ export const HomePage = () => {
     // Update prefs
     getPrefs();
   };
-  
 
   return (
     user && (
@@ -118,6 +124,7 @@ export const HomePage = () => {
               placeholder="New Food Preference"
               type="text"
               value={newPref}
+              ref={foodItemInput}
               onKeyDown={handleKeyDown}
               onChange={(e) => setNewPref(e.target.value)}
             />
