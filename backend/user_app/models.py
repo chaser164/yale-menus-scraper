@@ -33,13 +33,13 @@ class User(AbstractUser):
             self.verification = "verified"
             self.save()
             return "valid code"
-        
+
 
     def is_expired(self):
         current_time = timezone.now()
         time_difference = current_time - self.timestamp
         return time_difference.total_seconds() > EXPIRATION_TIME
-    
+
     # Sends email with 6 digit code
     # populates "verification" field with hashed 6 digit code
     # Updates timestamp to now if email is sent successfully
@@ -47,11 +47,7 @@ class User(AbstractUser):
         with smtplib.SMTP('smtp.gmail.com', 587) as server:
             server.starttls()
             load_dotenv()
-            password = os.getenv('APP_PASSWORD')
-            print("\n\n*****")
-            print(password)
-            print("*****\n\n")
-            server.login('yalemenusscraper@gmail.com', password)
+            server.login('yalemenusscraper@gmail.com', os.getenv('APP_PASSWORD'))
             msg = MIMEMultipart()
             msg['Subject'] = f'Yale Menus Scrape Verification Email'
             msg['From'] = 'yalemenusscraper@gmail.com'
