@@ -30,9 +30,9 @@ class Command(BaseCommand):
         print("initiating update...")
         chromium_options = ChromiumOptions()
         chromium_options.add_argument("--headless=new")
-        chromium_options.add_argument('--disable-gpu')
+        # chromium_options.add_argument('--disable-gpu')
         chromium_options.add_argument('--no-sandbox')
-        chromium_options.add_argument('--disable-dev-shm-usage')
+        # chromium_options.add_argument('--disable-dev-shm-usage')
         driver = webdriver.ChromiumEdge(options=chromium_options)
 
         prefs = Pref.objects.all()
