@@ -47,72 +47,43 @@ class Command(BaseCommand):
                 # Allow time for the menu loading animation
                 driver.implicitly_wait(10)
                 meals = driver.find_elements(By.CLASS_NAME, "v-captiontext")
-                if len(meals) == 3:
-                    breakfast_button = meals[0]
-                    dinner_button = meals[1]
-                    brunch_lunch_button = meals[2]
-                else:
-                    breakfast_button = None
-                    dinner_button = meals[0]
-                    brunch_lunch_button = meals[1]
             except:
                 print(f'timeout while entering{menu} menu')
                 driver.quit()
                 return
-
-            # Account for optionality of breakfast
-            if breakfast_button != None:
-                # Get breakfast page source   
-                breakfast_button.click()
-                # Wait until menu contents loaded by checking for header presence
-                total = 0
-                while not '<title>Breakfast' in driver.page_source:
-                    t.sleep(LOAD_TIME)
-                    total += LOAD_TIME
-                    if total > 10:
-                        print(f'timeout while retrieving Breakfast menu for{menu}')
-                        driver.quit()
-                        return
-                    continue
-                breakfast_page_source = driver.page_source
-            else:
-                breakfast_page_source = ""
-            # Get dinner page source
-            dinner_button.click()
-            # Wait until menu contents loaded by checking for header presence
-            total = 0
-            while not '<title>Dinner' in driver.page_source:
-                t.sleep(LOAD_TIME)
-                total += LOAD_TIME
-                if total > 10:
-                    print(f'timeout while retrieving Dinner menu for{menu}')
-                    driver.quit()
-                    return
-                continue
-            dinner_page_source = driver.page_source
-            # get brunch lunch page source
-            brunch_lunch_button.click()
-            # Wait until menu contents loaded by checking for header presence
-            total = 0
-            while not '<title>Brunch and Lunch' in driver.page_source:
-                t.sleep(LOAD_TIME)
-                total += LOAD_TIME
-                if total > 10:
-                    print(f'timeout while retrieving Brunch/Lunch menu for{menu}')
-                    driver.quit()
-                    return
-                continue
-            brunch_lunch_page_source = driver.page_source
             
+            page_source_dict_lst = [{'id': '<title>Breakfast', 'visited' : False, 'src': ''},
+                                    {'id': '<title>Brunch and Lunch', 'visited' : False, 'src': ''},
+                                    {'id': '<title>Dinner', 'visited' : False, 'src': ''}]
+            for meal in meals:
+                meal.click()
+                total = 0
+                while True:
+                    # Sleep a bit
+                    t.sleep(LOAD_TIME)
+                    # Populate dict with page src
+                    found = False
+                    for item in page_source_dict_lst:
+                        if item['id'] in driver.page_source and not item['visited']:
+                            item['src'] = driver.page_source
+                            item['visited'] = True
+                            found = True
+                            break
+                    total += LOAD_TIME
+                    # Continue after timeout or menu populated
+                    if total > 7 or found:
+                        break
+
+            # Add all prefs
             for pref in prefs:
                 # Add breakfast data
-                if re.search(rf'>[^<]*{pref.pref_string}[^>]*<', breakfast_page_source, re.IGNORECASE):
+                if re.search(rf'>[^<]*{pref.pref_string}[^>]*<', page_source_dict_lst[0]['src'], re.IGNORECASE):
                     pref.breakfast += menu
                 # Add brunch/lunch data
-                if re.search(rf'>[^<]*{pref.pref_string}[^>]*<', brunch_lunch_page_source, re.IGNORECASE):
+                if re.search(rf'>[^<]*{pref.pref_string}[^>]*<', page_source_dict_lst[1]['src'], re.IGNORECASE):
                     pref.brunch_lunch += menu
                 # Add dinner data
-                if re.search(rf'>[^<]*{pref.pref_string}[^>]*<', dinner_page_source, re.IGNORECASE):
+                if re.search(rf'>[^<]*{pref.pref_string}[^>]*<', page_source_dict_lst[2]['src'], re.IGNORECASE):
                     pref.dinner += menu
                 pref.save()
             print(f'{menu[1:]} data added...')
