@@ -35,7 +35,7 @@ class Command(BaseCommand):
         driver = webdriver.Chrome(options=chrome_options)
 
         try:
-            driver.get("https://www.google.com")
+            driver.get("https://usa.jamix.cloud/menu/app?anro=97939&k=1")
             print("Page title was '{}'".format(driver.title))
         finally:
             driver.quit()
