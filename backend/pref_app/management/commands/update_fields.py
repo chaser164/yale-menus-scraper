@@ -31,7 +31,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         print("initiating update...")
         try:
-            service = ChromeService(executable_path=ChromeDriverManager().install())
+            service = ChromeService(executable_path=ChromeDriverManager(version='114.0.5735.90').install())
         except:
             print("Offline. Exiting.")
             return
