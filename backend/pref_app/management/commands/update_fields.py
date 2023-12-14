@@ -2,7 +2,7 @@ import re
 import time as t
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chromium.options import ChromiumOptions
 from django.core.management.base import BaseCommand
 from pref_app.models import Pref
 from .email import send_emails
@@ -28,9 +28,9 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         print("initiating update...")
-        chrome_options = Options()
-        chrome_options.add_argument("--headless=new")
-        driver = webdriver.Chrome(options=chrome_options)
+        chromium_options = ChromiumOptions()
+        # chromium_options.add_argument("--headless=new")
+        driver = webdriver.ChromiumEdge(options=chromium_options)
 
         prefs = Pref.objects.all()
 
