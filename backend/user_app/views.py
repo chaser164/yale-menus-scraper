@@ -22,11 +22,16 @@ class Sign_up(APIView):
     
     def post(self, request):
         request.data["username"] = request.data["email"]
-        # try:
-        user = User.objects.create_user(**request.data)
-        user.send_verification_email()
-        # except:
-        #     return Response("Email already in use", status=HTTP_400_BAD_REQUEST)
+        # Add user attempt
+        try:
+            user = User.objects.create_user(**request.data)
+        except:
+            return Response({"message": "Email already in use"}, status=HTTP_400_BAD_REQUEST)
+        # Send email attempt
+        try:
+            user.send_verification_email()
+        except:
+            return Response({"message": "Error sending email"}, staut=HTTP_400_BAD_REQUEST)
         token = Token.objects.create(user=user)
         return Response(
             {"token": token.key, "user": UserSerializer(user).data}, status=HTTP_201_CREATED
@@ -120,6 +125,12 @@ class Resend(APIView):
     permission_classes = [IsAuthenticated]
    
     def post(self, request):
+        try:
+            request.user.send_verification_email()
+        except:
+            return Response(
+                {"message": "Error sending email"}
+            )
         return Response(
-            {"message": request.user.send_verification_email()}
+            {"message": "Email sent!"}
         )

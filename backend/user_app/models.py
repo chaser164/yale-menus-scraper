@@ -55,13 +55,11 @@ class User(AbstractUser):
             # Attach the html
             text = MIMEText(self.generate_code(), 'html')
             msg.attach(text)
-            try:
-                server.send_message(msg)
-                self.timestamp = timezone.now()
-                self.save()
-                return "Email to {self.email} sent successfully"
-            except:
-                return f"Error sending email to {self.email}"
+            # Send email
+            server.send_message(msg)
+            self.timestamp = timezone.now()
+            self.save()
+
 
     def generate_code(self):
         # Generate code
