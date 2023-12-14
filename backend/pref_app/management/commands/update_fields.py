@@ -32,8 +32,8 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         print("initiating update...")
 
-        # # Install Chromium WebDriver
-        # install_chromedriver()
+        # Install Chromium WebDriver
+        install_chromedriver()
 
         try:
             # Use Chromium WebDriver
