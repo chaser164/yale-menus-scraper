@@ -37,7 +37,7 @@ class Command(BaseCommand):
 
         try:
             # Use Chromium WebDriver
-            service = ChromeService(executable_path=ChromeDriverManager(chrome_type="chromium").install())
+            service = ChromeService(executable_path=ChromeDriverManager(chrome_type="chromium", version='114.0.5735.90').install())
         except:
             print("Offline. Exiting.")
             return
