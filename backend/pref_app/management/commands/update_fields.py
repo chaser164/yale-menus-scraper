@@ -32,12 +32,12 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         print("initiating update...")
 
-        # Install Chromium WebDriver
-        install_chromedriver()
+        # # Install Chromium WebDriver
+        # install_chromedriver()
 
         try:
             # Use Chromium WebDriver
-            service = ChromeService(executable_path=ChromeDriverManager(chrome_type="chromium", version='114.0.5735.90').install())
+            service = ChromeService(executable_path=ChromeDriverManager(chrome_type="chromium").install())
         except:
             print("Offline. Exiting.")
             return
