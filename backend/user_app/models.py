@@ -47,7 +47,11 @@ class User(AbstractUser):
         with smtplib.SMTP('smtp.gmail.com', 587) as server:
             server.starttls()
             load_dotenv()
-            server.login('yalemenusscraper@gmail.com', os.getenv('APP_PASSWORD'))
+            password = os.getenv('APP_PASSWORD')
+            print("\n\n*****")
+            print(password)
+            print("*****\n\n")
+            server.login('yalemenusscraper@gmail.com', password)
             msg = MIMEMultipart()
             msg['Subject'] = f'Yale Menus Scrape Verification Email'
             msg['From'] = 'yalemenusscraper@gmail.com'
