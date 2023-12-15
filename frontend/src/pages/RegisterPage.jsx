@@ -4,6 +4,7 @@ import { userContext } from "../App";
 import { api } from "../utilities.jsx";
 
 export const RegisterPage = () => {
+  const [warningText, setWarningText] = useState("");
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConf, setPasswordConf] = useState("");
@@ -12,11 +13,32 @@ export const RegisterPage = () => {
 
 
   const signUp = async (e) => {
+    setWarningText("");
     e.preventDefault();
-    let response = await api.post("users/signup/", {
-      email: userName,
-      password: password,
-    });
+    // Guards
+    if(userName.length == 0 || password.length == 0 || passwordConf.lengh == 0) {
+      setWarningText("All fields must be populated");
+      return;
+    }
+    if(password != passwordConf) {
+      setWarningText("Passwords must match");
+      return;
+    }
+    if(password.length < 8) {
+      setWarningText("Password must be at least 8 characters");
+      return;
+    }
+    let response;
+    try {
+      response = await api.post("users/signup/", {
+        email: userName,
+        password: password,
+      });
+    }
+    catch (error) {
+      setWarningText(error.response.data.message);
+      return;
+    }
     console.log(response.data)
     let user = response.data.user;
     let token = response.data.token;
@@ -52,6 +74,7 @@ export const RegisterPage = () => {
         value={passwordConf}
         onChange={(e) => setPasswordConf(e.target.value)}
       />
+      <p className="warning-text">{warningText}</p>
       <br />
       <input className="styled-button" type="submit" />
     </form>

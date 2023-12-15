@@ -4,6 +4,7 @@ import { userContext } from "../App";
 import { useNavigate } from "react-router-dom";
 
 export const LoginPage = () => {
+  const [warningText, setWarningText] = useState("");
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const { setUser, setVerified } = useContext(userContext);
@@ -11,10 +12,18 @@ export const LoginPage = () => {
 
   const logIn = async (e) => {
     e.preventDefault();
-    let response = await api.post("users/login/", {
-      email: userName,
-      password: password,
-    });
+    let response;
+    try {
+      response = await api.post("users/login/", {
+        email: userName,
+        password: password,
+      });
+    }
+    catch (error) {
+      console.log("here")
+      setWarningText(error.response.data.message);
+      return;
+    }
     let token = response.data.token;
     let user = response.data.user;
     localStorage.setItem("token", token);

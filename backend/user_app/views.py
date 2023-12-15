@@ -47,7 +47,7 @@ class Log_in(APIView):
             token, _ = Token.objects.get_or_create(user=user)
             return Response({"token": token.key, "user": UserSerializer(user).data})
         else:
-            return Response("No user matching credentials", status=HTTP_404_NOT_FOUND)
+            return Response({"message": "No user matching credentials"}, status=HTTP_404_NOT_FOUND)
 
 class Log_out(APIView):
     authentication_classes = [TokenAuthentication]
