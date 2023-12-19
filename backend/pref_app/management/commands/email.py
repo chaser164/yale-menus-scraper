@@ -1,4 +1,5 @@
 import smtplib
+from django.db.models import Count, Q
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from datetime import datetime
@@ -9,7 +10,8 @@ from user_app.models import User
 
 def send_emails():
     print("initiating email sendouts...")
-    users = User.objects.all()
+    # Only select verified, pref-having users
+    users = User.objects.filter(verification="verified", prefs__isnull=False)
     with smtplib.SMTP('smtp.gmail.com', 587) as server:
         server.starttls()
         load_dotenv()
