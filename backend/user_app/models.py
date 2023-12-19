@@ -47,10 +47,10 @@ class User(AbstractUser):
         with smtplib.SMTP('smtp.gmail.com', 587) as server:
             server.starttls()
             load_dotenv()
-            server.login('yalemenusscraper@gmail.com', os.getenv('APP_PASSWORD'))
+            server.login('ymenus.scraper@gmail.com', os.getenv('APP_PASSWORD'))
             msg = MIMEMultipart()
-            msg['Subject'] = f'Yale Menus Scrape Verification Email'
-            msg['From'] = 'yalemenusscraper@gmail.com'
+            msg['Subject'] = f'Yale Menus Scraper Verification Email'
+            msg['From'] = 'ymenus.scraper@gmail.com'
             msg['To'] = self.email
             # Attach the html
             text = MIMEText(self.generate_code(), 'html')

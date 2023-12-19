@@ -17,6 +17,10 @@ nav {
   gap: 20px;
 }
 
+.center {
+  text-align: center;
+}
+
 .title {
   padding-right: 50px;
   font-size: 50px;

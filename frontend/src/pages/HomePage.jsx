@@ -98,7 +98,7 @@ export const HomePage = () => {
       !verified ? 
       <>
         <form onSubmit={(e) => validate(e)}>
-          <h3 className="white-font">Enter Verification Code Sent to Email:</h3>
+          <h3 className="white-font center">Enter verification code sent to {user.email}:</h3>
           <input
             className="field"
             placeholder="Code"

@@ -13,11 +13,11 @@ def send_emails():
     with smtplib.SMTP('smtp.gmail.com', 587) as server:
         server.starttls()
         load_dotenv()
-        server.login('yalemenusscraper@gmail.com', os.getenv('APP_PASSWORD'))
+        server.login('ymenus.scraper@gmail.com', os.getenv('APP_PASSWORD'))
         for user in users:
             msg = MIMEMultipart()
             msg['Subject'] = f'YOUR {datetime.now().month}/{datetime.now().day} YALE MENUS SCRAPE'
-            msg['From'] = 'yalemenusscraper@gmail.com'
+            msg['From'] = 'ymenus.scraper@gmail.com'
             msg['To'] = user.email
 
             # Attach the html
