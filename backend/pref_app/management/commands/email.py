@@ -1,5 +1,4 @@
 import smtplib
-from django.db.models import Count, Q
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from datetime import datetime
