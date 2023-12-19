@@ -75,19 +75,26 @@ function App() {
     }
   };
 
+  const goHome = () => {
+    let token = localStorage.getItem("token");
+    if(token) {
+      navigate("/");
+    }
+  }
 
   return (
     (hasLoaded && 
     <div id="app">
       <div className="navbar-container">
-        <div className="white-font title">Yale Menus Scraper</div>
+        <div className="white-font title" onClick={goHome}>Yale Menus Scraper</div>
         <br />
         <header>
           <nav>
             {user ? 
-              <>
+              <div className="navbar-aligner">
+                <button className="settings-button" onClick={() => navigate("/settings")}>⚙</button>
                 <button className="styled-button" onClick={logOut}>Log Out</button>
-              </> :
+              </div> :
               <>
                 <Link to="/signup">Sign Up</Link>
                 <Link to="/login">Log In</Link>

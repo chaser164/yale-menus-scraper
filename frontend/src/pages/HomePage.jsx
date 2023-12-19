@@ -1,6 +1,7 @@
 import { api } from "../utilities.jsx";
-import { useContext, useState, useEffect, useRef } from "react";
+import { useContext, useState, useEffect, useRef, useSyncExternalStore } from "react";
 import { userContext } from "../App";
+import { Loader } from "../components/Loader.jsx";
 
 export const HomePage = () => {
   const { user, verified, setVerified } = useContext(userContext);
@@ -13,12 +14,20 @@ export const HomePage = () => {
   const [showAdd, setShowAdd] = useState(false);
   const [showRemove, setShowRemove] = useState(false);
   const [newPref, setNewPref] = useState("");
+  const [loading, setLoading] = useState(true);
 
 
   // Get user prefs
   const getPrefs = async () => {
-    let response = await api.get("prefs/");
-    setPrefsList(response.data);
+    setLoading(true);
+    try {
+      let response = await api.get("prefs/");
+      setPrefsList(response.data);
+    }
+    catch {
+      console.log("Could not load preferences")
+    }
+    setLoading(false);
   }; 
 
   useEffect(() => {
@@ -87,10 +96,19 @@ export const HomePage = () => {
   };
 
   const delPref = async (id) => {
-    // Update user list
-    await api.delete(`prefs/${id}`);
-    // Update prefs
-    getPrefs();
+    // Immediately update frontend
+    const prevPrefsList = prefsList;
+    const newPrefsList = [...prefsList].filter((pref) => pref.id !== id);
+    setPrefsList(newPrefsList);
+  
+    // Update backend too
+    try {
+      await api.delete(`prefs/${id}`);
+    } catch (error) {
+      // Revert if unsuccessful
+      setPrefsList(prevPrefsList);
+      console.error("Could not delete food preference", error);
+    }
   };
 
   return (
@@ -122,48 +140,52 @@ export const HomePage = () => {
         <h2 className="white-font">
           Your Food Items:
         </h2>
-        <ul>
-          {prefsList.map((pref, index) => (
-            <li className="white-font" key={index}>
-              {index + 1}. {pref.pref_string}
-              {showRemove &&
-                <button onClick={() => delPref(pref.id)} className="delete-button">x</button>
+        {!loading ? 
+          <ul>
+            {prefsList.map((pref, index) => (
+              <li className="white-font" key={index}>
+                {index + 1}. {pref.pref_string}
+                {showRemove &&
+                  <button onClick={() => delPref(pref.id)} className="delete-button">x</button>
+                }
+              </li>
+            ))}
+            <br />
+            {!showAdd && !showRemove ?
+            <>
+              {/* Cap the list at 50 */}
+              {prefsList.length <= 50 && 
+                <button onClick={() => setShowAdd(true)} className="styled-button">Add Food</button>
               }
-            </li>
-          ))}
-          <br />
-          {!showAdd && !showRemove ?
-          <>
-            {/* Cap the list at 50 */}
-            {prefsList.length <= 50 && 
-              <button onClick={() => setShowAdd(true)} className="styled-button">Add Food</button>
+              {prefsList.length > 0 && 
+                <button onClick={() => setShowRemove(true)} className="styled-button">Remove Food</button>
+              }
+            </>
+            :
+            (showAdd ? 
+              <div className="new-pref-container">
+                <input
+                className="field"
+                placeholder="New Food Preference"
+                type="text"
+                value={newPref}
+                ref={foodItemInput}
+                onKeyDown={handleKeyDown}
+                onChange={(e) => setNewPref(e.target.value)}
+              />
+              <button onClick={addPref} className="styled-button small">Save</button>
+              <button onClick={() => setShowAdd(false)} className="styled-button small">Cancel</button>
+            </div>
+            :
+            <>
+              <button onClick={() => setShowRemove(false)} className="styled-button small">Done</button>
+            </>
+            )
             }
-            {prefsList.length > 0 && 
-              <button onClick={() => setShowRemove(true)} className="styled-button">Remove Food</button>
-            }
-          </>
-          :
-          (showAdd ? 
-            <div className="new-pref-container">
-              <input
-              className="field"
-              placeholder="New Food Preference"
-              type="text"
-              value={newPref}
-              ref={foodItemInput}
-              onKeyDown={handleKeyDown}
-              onChange={(e) => setNewPref(e.target.value)}
-            />
-            <button onClick={addPref} className="styled-button small">Save</button>
-            <button onClick={() => setShowAdd(false)} className="styled-button small">Cancel</button>
-          </div>
-          :
-          <>
-            <button onClick={() => setShowRemove(false)} className="styled-button small">Done</button>
-          </>
-          )
-          }
-      </ul>
+          </ul>
+        :
+          <Loader size={35} />
+        }
       </div>
     )
   );
