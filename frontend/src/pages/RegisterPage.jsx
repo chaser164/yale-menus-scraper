@@ -21,6 +21,11 @@ export const RegisterPage = () => {
       setWarningText("All fields must be populated");
       return;
     }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(userName)) {
+      setWarningText("Invalid email format");
+      return;
+    }
     if(password != passwordConf) {
       setWarningText("Passwords must match");
       return;

@@ -1,10 +1,9 @@
 # Yale Menus Scraper
 
 ## **TODO:**
-- Work on email confirmation (just send a 6 digit code it's easier...)
-- Allow account deletion
-- updating/deleting prefs
-- cookie auth
+- Configure account deletion in a settings page
+- Password reset
+- Configure cookie auth
 
 ## **API ENDPOINTS**
 
