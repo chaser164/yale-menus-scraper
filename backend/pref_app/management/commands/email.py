@@ -11,7 +11,7 @@ from user_app.models import User
 def send_emails():
     print("initiating email sendouts...")
     # Only select verified, pref-having users
-    users = User.objects.filter(verification="verified", prefs__isnull=False)
+    users = User.objects.filter(verification="verified", prefs__isnull=False).distinct()
     with smtplib.SMTP('smtp.gmail.com', 587) as server:
         server.starttls()
         load_dotenv()
