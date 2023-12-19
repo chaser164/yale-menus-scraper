@@ -28,3 +28,7 @@
 ### **api/v1/users/int:userid/**
 + __GET__ returns info about specific id
 + __DELETE__ deletes user with certain ID, admin access only
+### **api/v1/users/validate/**
++ __POST__ validate a user's 6-digit pin
+### **api/v1/users/validate/**
++ __POST__ resend validation email
