@@ -4,14 +4,17 @@ import { userContext } from "../App";
 import { useNavigate } from "react-router-dom";
 
 export const LoginPage = () => {
+  const { setUser, setVerified } = useContext(userContext);
   const [warningText, setWarningText] = useState("");
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
-  const { setUser, setVerified } = useContext(userContext);
+  const [disableButton, setDisableButton] = useState(false)
   const navigate = useNavigate();
 
   const logIn = async (e) => {
     e.preventDefault();
+    setWarningText("");
+    setDisableButton(true)
     let response;
     try {
       response = await api.post("users/login/", {
@@ -20,10 +23,12 @@ export const LoginPage = () => {
       });
     }
     catch (error) {
-      console.log("here")
+      setDisableButton(false)
+      console.log(error)
       setWarningText(error.response.data.message);
       return;
     }
+    setDisableButton(false)
     let token = response.data.token;
     let user = response.data.user;
     localStorage.setItem("token", token);
@@ -50,8 +55,8 @@ export const LoginPage = () => {
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
-      <br />
-      <input className="styled-button" type="submit" />
+      <p className="warning-text const-height">{warningText}</p>
+    <input className={disableButton ? "styled-button-disabled" : "styled-button"} type="submit" disabled={disableButton} />
     </form>
   );
 };

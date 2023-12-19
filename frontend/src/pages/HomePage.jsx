@@ -5,9 +5,11 @@ import { userContext } from "../App";
 export const HomePage = () => {
   const { user, verified, setVerified } = useContext(userContext);
   const foodItemInput = useRef(null);
+  const [disableButton, setDisableButton] = useState(false);
+  const [disableResend, setDisableResend] = useState(false);
   const [code, setCode] = useState("");
   const [message, setMessage] = useState("");
-  const [prefsList, setPrefsList] = useState(["hi"]);
+  const [prefsList, setPrefsList] = useState([]);
   const [showAdd, setShowAdd] = useState(false);
   const [showRemove, setShowRemove] = useState(false);
   const [newPref, setNewPref] = useState("");
@@ -17,7 +19,6 @@ export const HomePage = () => {
   const getPrefs = async () => {
     let response = await api.get("prefs/");
     setPrefsList(response.data);
-    console.log(response.data)
   }; 
 
   useEffect(() => {
@@ -33,9 +34,19 @@ export const HomePage = () => {
 
   const validate = async (e) => {
     e.preventDefault();
-    let response = await api.post("users/validate/", {
-      code: code,
-    });
+    setDisableButton(true);
+    let response;
+    try {
+      response = await api.post("users/validate/", {
+        code: code,
+      });
+    }
+    catch {
+      setDisableButton(false);
+      setMessage("Error validating code");
+      return;
+    }
+    setDisableButton(false);
     setMessage(response.data.message)
     if(response.data.is_valid) {
       setVerified(true);
@@ -43,7 +54,18 @@ export const HomePage = () => {
   };
 
   const resend = async () => {
-    await api.post("users/resend/");
+    setDisableResend(true);
+    try {
+      await api.post("users/resend/");
+    }
+    catch {
+      setDisableResend(false);
+      setMessage("Error sending email. Try again.")
+    }
+    // Disable email button for 5 seconds
+    setTimeout(() => {
+      setDisableResend(false);
+    }, 5000);
   }; 
 
   const handleKeyDown = (e) => {
@@ -84,11 +106,10 @@ export const HomePage = () => {
             value={code}
             onChange={(e) => setCode(e.target.value)}
           />
-          <br />
-          <input className="styled-button" type="submit" />
-        <p className="white-font">{message}</p>
+          <p className="warning-text">{message}</p>
+          <input className={disableButton ? "styled-button-disabled" : "styled-button"} type="submit" disabled={disableButton} />
         </form>
-        <button onClick={resend} className="styled-button-wide">Resend email</button>
+        <button onClick={resend} className={disableResend ? "styled-button-disabled wide" : "styled-button wide"} disabled={disableResend}>Resend email</button>
       </>
       :
       <div>
@@ -113,8 +134,13 @@ export const HomePage = () => {
           <br />
           {!showAdd && !showRemove ?
           <>
-            <button onClick={() => setShowAdd(true)} className="styled-button">Add Food</button>
-            <button onClick={() => setShowRemove(true)} className="styled-button">Remove Food</button>
+            {/* Cap the list at 50 */}
+            {prefsList.length <= 50 && 
+              <button onClick={() => setShowAdd(true)} className="styled-button">Add Food</button>
+            }
+            {prefsList.length > 0 && 
+              <button onClick={() => setShowRemove(true)} className="styled-button">Remove Food</button>
+            }
           </>
           :
           (showAdd ? 
@@ -128,12 +154,12 @@ export const HomePage = () => {
               onKeyDown={handleKeyDown}
               onChange={(e) => setNewPref(e.target.value)}
             />
-            <button onClick={addPref} className="styled-button-small">Save</button>
-            <button onClick={() => setShowAdd(false)} className="styled-button-small">Cancel</button>
+            <button onClick={addPref} className="styled-button small">Save</button>
+            <button onClick={() => setShowAdd(false)} className="styled-button small">Cancel</button>
           </div>
           :
           <>
-            <button onClick={() => setShowRemove(false)} className="styled-button-small">Done</button>
+            <button onClick={() => setShowRemove(false)} className="styled-button small">Done</button>
           </>
           )
           }

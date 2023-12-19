@@ -59,28 +59,27 @@ ol li a {
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
-.styled-button-wide {
-  align-self: center;
+.styled-button-disabled {
+  margin-left: 10px;
   font-weight: bolder;
   padding: 10px;
-  width: 150px;
+  width: 110px;
   border: 1px solid transparent;
   border-radius: 5px;
-  background-color: rgb(76, 76, 76);
+  background-color: rgb(173, 173, 173);
   color: whitesmoke;
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
-.styled-button-small{
+/* Some customizations meant to be paired with styled-button classes */
+.wide {
   align-self: center;
-  font-weight: bolder;
+  width: 150px;
+}
+
+.small{
   padding: 5px;
   width: 60px;
-  border: 1px solid transparent;
-  border-radius: 5px;
-  background-color: rgb(76, 76, 76);
-  color: whitesmoke;
-  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
 .delete-button {
@@ -99,17 +98,7 @@ ol li a {
 
 .styled-button:hover {
   cursor: pointer;
-  background-color: rgb(109, 109, 109);
-}
-
-.styled-button-wide:hover {
-  cursor: pointer;
-  background-color: rgb(109, 109, 109);
-}
-
-.styled-button-small:hover {
-  cursor: pointer;
-  background-color: rgb(109, 109, 109);
+  background-color: rgb(88, 88, 88);
 }
 
 .delete-button:hover {
@@ -137,5 +126,5 @@ li {
 
 .warning-text {
   color: rgb(252, 252, 122);
+  height: 17px;
 }
-

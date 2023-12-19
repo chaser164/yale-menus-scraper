@@ -4,17 +4,18 @@ import { userContext } from "../App";
 import { api } from "../utilities.jsx";
 
 export const RegisterPage = () => {
+  const { setUser } = useContext(userContext);
+  const [disableButton, setDisableButton] = useState(false);
   const [warningText, setWarningText] = useState("");
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConf, setPasswordConf] = useState("");
-  const { setUser } = useContext(userContext);
   const navigate = useNavigate();
 
 
   const signUp = async (e) => {
-    setWarningText("");
     e.preventDefault();
+    setWarningText("");
     // Guards
     if(userName.length == 0 || password.length == 0 || passwordConf.lengh == 0) {
       setWarningText("All fields must be populated");
@@ -28,6 +29,7 @@ export const RegisterPage = () => {
       setWarningText("Password must be at least 8 characters");
       return;
     }
+    setDisableButton(true);
     let response;
     try {
       response = await api.post("users/signup/", {
@@ -36,10 +38,11 @@ export const RegisterPage = () => {
       });
     }
     catch (error) {
+      setDisableButton(false);
       setWarningText(error.response.data.message);
       return;
     }
-    console.log(response.data)
+    setDisableButton(false);
     let user = response.data.user;
     let token = response.data.token;
     // Store the token securely (e.g., in localStorage or HttpOnly cookies)
@@ -75,8 +78,7 @@ export const RegisterPage = () => {
         onChange={(e) => setPasswordConf(e.target.value)}
       />
       <p className="warning-text">{warningText}</p>
-      <br />
-      <input className="styled-button" type="submit" />
+      <input className={disableButton ? "styled-button-disabled" : "styled-button"} type="submit" disabled={disableButton} />
     </form>
   );
 };
