@@ -18,7 +18,7 @@ def send_emails():
             msg = MIMEMultipart()
             msg['Subject'] = f'YOUR {datetime.now().month}/{datetime.now().day} YALE MENUS SCRAPE'
             msg['From'] = 'yalemenusscraper@gmail.com'
-            msg['To'] = "creynders22@gmail.com"
+            msg['To'] = user.email
 
             # Attach the html
             text = MIMEText(build_message_html(user.prefs), 'html')

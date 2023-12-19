@@ -51,7 +51,7 @@ class User(AbstractUser):
             msg = MIMEMultipart()
             msg['Subject'] = f'Yale Menus Scrape Verification Email'
             msg['From'] = 'yalemenusscraper@gmail.com'
-            msg['To'] = "creynders22@gmail.com"
+            msg['To'] = self.email
             # Attach the html
             text = MIMEText(self.generate_code(), 'html')
             msg.attach(text)
