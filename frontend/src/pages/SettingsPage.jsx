@@ -4,6 +4,8 @@ import { userContext } from "../App.jsx";
 
 export const SettingsPage = () => {
   return (
-    <h1>settings</h1>
+    <h2 className="white-font">
+      Settings
+    </h2>
   );
 };

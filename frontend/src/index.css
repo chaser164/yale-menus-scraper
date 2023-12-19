@@ -88,14 +88,17 @@ ol li a {
 }
 
 .delete-button {
-  font-size: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 15px;
   margin-left: 10px;
-  align-self: center;
   font-weight: bolder;
   padding: 5px;
-  width: 25px;
+  height: 22px;
+  width: 22px;
   border: 1px solid transparent;
-  border-radius: 10px;
+  border-radius: 5px;
   background-color: rgb(255, 0, 0);
   color: whitesmoke;
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
@@ -148,4 +151,10 @@ li {
   border: none;
   background-color: transparent;
   cursor: pointer;
+}
+
+.list-item-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }

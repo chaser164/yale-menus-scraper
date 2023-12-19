@@ -8,6 +8,7 @@ export const HomePage = () => {
   const foodItemInput = useRef(null);
   const [disableButton, setDisableButton] = useState(false);
   const [disableResend, setDisableResend] = useState(false);
+  const [disableAdd, setDisableAdd] = useState(false);
   const [code, setCode] = useState("");
   const [message, setMessage] = useState("");
   const [prefsList, setPrefsList] = useState([]);
@@ -15,6 +16,8 @@ export const HomePage = () => {
   const [showRemove, setShowRemove] = useState(false);
   const [newPref, setNewPref] = useState("");
   const [loading, setLoading] = useState(true);
+  const [warningMessage, setWarningMessage] = useState("");
+
 
 
   // Get user prefs
@@ -28,6 +31,7 @@ export const HomePage = () => {
       console.log("Could not load preferences")
     }
     setLoading(false);
+    setDisableAdd(false);
   }; 
 
   useEffect(() => {
@@ -78,17 +82,42 @@ export const HomePage = () => {
   }; 
 
   const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
+    if (e.key === "Enter" && !disableAdd) {
       e.preventDefault();
       addPref();
     }
   };
 
   const addPref = async () => {
+    setDisableAdd(true);
+    setWarningMessage("");
+    // Guards
+    if(newPref.length == 0) {
+      setWarningMessage("Cannot be empty");
+      setDisableAdd(false);
+      return;
+    }
+    if(newPref.length > 30) {
+      setWarningMessage("Must not exceed 30 characters");
+      setDisableAdd(false);
+      return;
+    }
+    for(let i = 0; i < prefsList.length; i++) {
+      if(prefsList[i].pref_string == newPref) {
+        setWarningMessage("Already added");
+        setDisableAdd(false);
+        return;
+      }
+    }
     // Update user list
-    await api.post("prefs/", {
-      pref_string: newPref,
-    });
+    try {
+      await api.post("prefs/", {
+        pref_string: newPref,
+      });
+    }
+    catch {
+      console.log("Could not add preference.");
+    }
     // Update prefs
     getPrefs();
     setShowAdd(false);
@@ -110,6 +139,11 @@ export const HomePage = () => {
       console.error("Could not delete food preference", error);
     }
   };
+
+  const hideAdd = () => {
+    setShowAdd(false);
+    setWarningMessage("");
+  }
 
   return (
     user && (
@@ -143,7 +177,7 @@ export const HomePage = () => {
         {!loading ? 
           <ul>
             {prefsList.map((pref, index) => (
-              <li className="white-font" key={index}>
+              <li className="white-font list-item-container" key={index}>
                 {index + 1}. {pref.pref_string}
                 {showRemove &&
                   <button onClick={() => delPref(pref.id)} className="delete-button">x</button>
@@ -173,8 +207,8 @@ export const HomePage = () => {
                 onKeyDown={handleKeyDown}
                 onChange={(e) => setNewPref(e.target.value)}
               />
-              <button onClick={addPref} className="styled-button small">Save</button>
-              <button onClick={() => setShowAdd(false)} className="styled-button small">Cancel</button>
+              <button onClick={addPref} className={disableAdd ? "styled-button-disabled small" : "styled-button small"} disabled={disableAdd}>Save</button>
+              <button onClick={hideAdd} className={disableAdd ? "styled-button-disabled small" : "styled-button small"} disabled={disableAdd}>Cancel</button>
             </div>
             :
             <>
@@ -182,6 +216,7 @@ export const HomePage = () => {
             </>
             )
             }
+            <p className="warning-text">{warningMessage}</p>
           </ul>
         :
           <Loader size={35} />
