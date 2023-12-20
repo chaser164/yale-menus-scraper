@@ -18,8 +18,6 @@ export const HomePage = () => {
   const [loading, setLoading] = useState(true);
   const [warningMessage, setWarningMessage] = useState("");
 
-
-
   // Get user prefs
   const getPrefs = async () => {
     setLoading(true);
@@ -28,7 +26,8 @@ export const HomePage = () => {
       setPrefsList(response.data);
     }
     catch {
-      console.log("Could not load preferences")
+      setWarningMessage("Could not load preferences");
+      console.error("Could not load preferences")
     }
     setLoading(false);
     setDisableAdd(false);
@@ -103,7 +102,8 @@ export const HomePage = () => {
       return;
     }
     for(let i = 0; i < prefsList.length; i++) {
-      if(prefsList[i].pref_string == newPref) {
+      // Case insensitive comparisons
+      if(prefsList[i].pref_string.toLowerCase() == newPref.toLowerCase()) {
         setWarningMessage("Already added");
         setDisableAdd(false);
         return;
@@ -116,7 +116,12 @@ export const HomePage = () => {
       });
     }
     catch {
-      console.log("Could not add preference.");
+      setWarningMessage("Could not add preference");
+      console.error("Error adding preference");
+      setShowAdd(false);
+      setNewPref("");
+      setDisableAdd(false);
+      return;
     }
     // Update prefs
     getPrefs();
@@ -136,12 +141,18 @@ export const HomePage = () => {
     } catch (error) {
       // Revert if unsuccessful
       setPrefsList(prevPrefsList);
+      setWarningMessage("Error deleting preference");
       console.error("Could not delete food preference", error);
     }
   };
 
-  const hideAdd = () => {
-    setShowAdd(false);
+  const changeAddVis = (state) => {
+    setShowAdd(state);
+    setWarningMessage("");
+  }
+
+  const changeRemoveVis = (state) => {
+    setShowRemove(state);
     setWarningMessage("");
   }
 
@@ -185,14 +196,15 @@ export const HomePage = () => {
               </li>
             ))}
             <br />
+            <p className="warning-text">{warningMessage}</p>
             {!showAdd && !showRemove ?
             <>
               {/* Cap the list at 50 */}
               {prefsList.length <= 50 && 
-                <button onClick={() => setShowAdd(true)} className="styled-button">Add Food</button>
+                <button onClick={() => changeAddVis(true)} className="styled-button">Add Food</button>
               }
               {prefsList.length > 0 && 
-                <button onClick={() => setShowRemove(true)} className="styled-button">Remove Food</button>
+                <button onClick={() => changeRemoveVis(true)} className="styled-button">Remove Food</button>
               }
             </>
             :
@@ -208,15 +220,14 @@ export const HomePage = () => {
                 onChange={(e) => setNewPref(e.target.value)}
               />
               <button onClick={addPref} className={disableAdd ? "styled-button-disabled small" : "styled-button small"} disabled={disableAdd}>Save</button>
-              <button onClick={hideAdd} className={disableAdd ? "styled-button-disabled small" : "styled-button small"} disabled={disableAdd}>Cancel</button>
+              <button onClick={() => changeAddVis(false)} className={disableAdd ? "styled-button-disabled small" : "styled-button small"} disabled={disableAdd}>Cancel</button>
             </div>
             :
             <>
-              <button onClick={() => setShowRemove(false)} className="styled-button small">Done</button>
+              <button onClick={() => changeRemoveVis(false)} className="styled-button small">Done</button>
             </>
             )
             }
-            <p className="warning-text">{warningMessage}</p>
           </ul>
         :
           <Loader size={35} />

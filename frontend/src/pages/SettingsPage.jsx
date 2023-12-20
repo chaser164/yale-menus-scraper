@@ -6,6 +6,7 @@ import { userContext } from "../App.jsx";
 export const SettingsPage = () => {
   const { setUser, setVerified } = useContext(userContext);
   const navigate = useNavigate();
+  const [warningMessage, setWarningMessage] = useState("");
   const [dangerZoneVisible, setDangerZoneVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   
@@ -15,8 +16,12 @@ export const SettingsPage = () => {
       await api.delete("users/me");
     }
     catch {
-      console.log("Deletion attempt failed");
+      setWarningMessage("Deletion attempt failed");
+      console.error("Deletion attempt failed");
+      setLoading(false);
+      return;
     }
+    // Log out user
     // Remove the token from secure storage (e.g., localStorage)
     localStorage.removeItem("token");
     delete api.defaults.headers.common["Authorization"];
@@ -28,20 +33,26 @@ export const SettingsPage = () => {
     setLoading(false);
   }
 
+  const changeDangerVis = (state) => {
+    setDangerZoneVisible(state);
+    setWarningMessage("");
+  }
+
   return (
     <div>
       <h2 className="white-font">
         Settings
       </h2>
       {!dangerZoneVisible ? 
-      <button onClick={() => setDangerZoneVisible(true)} className="styled-button wide">Delete Account</button>
+      <button onClick={() => changeDangerVis(true)} className="styled-button wide">Delete Account</button>
       :
       <div className="confirmation-holder">
         <h3 className="white-font">Are you sure?</h3>
-        <button onClick={() => setDangerZoneVisible(false)} className={loading ? "styled-button-disabled small" : "styled-button small"} disabled={loading}>Cancel</button>
+        <button onClick={() => changeDangerVis(false)} className={loading ? "styled-button-disabled small" : "styled-button small"} disabled={loading}>Cancel</button>
         <button onClick={deleteAccount} className={loading ? "styled-button-disabled small" : "styled-button small"} disabled={loading}>Yes</button>
       </div>
       }
+      <p className="warning-text">{warningMessage}</p>
     </div>
   );
 };
