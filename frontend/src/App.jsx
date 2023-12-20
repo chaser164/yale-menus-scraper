@@ -96,8 +96,8 @@ function App() {
                 <button className="styled-button" onClick={logOut}>Log Out</button>
               </div> :
               <>
-                <Link to="/signup">Sign Up</Link>
-                <Link to="/login">Log In</Link>
+                <Link className="nav-links" to="/signup">Sign Up</Link>
+                <Link className="nav-links" to="/login">Log In</Link>
               </>
             }
           </nav>

@@ -163,3 +163,15 @@ li {
   display: flex;
   flex: row;
 }
+
+.forgot-link {
+  font-size: 14px;
+  color:wheat;
+  padding: 25px;
+  display: flex;
+  align-items: center;
+}
+
+.forgot-link:hover {
+  color: rgb(60, 70, 255);
+}

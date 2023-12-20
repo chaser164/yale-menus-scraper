@@ -3,6 +3,7 @@ import { HomePage } from "./pages/HomePage"
 import { LoginPage } from "./pages/LoginPage";
 import { RegisterPage } from "./pages/RegisterPage";
 import { SettingsPage } from "./pages/SettingsPage";
+import { ForgotPage } from "./pages/ForgotPage";
 import App from "./App";
 
 
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
             {
                 path: "settings",
                 element:<SettingsPage/>
+            },
+            {
+                path: "forgot",
+                element:<ForgotPage/>
             }
         ],
     },

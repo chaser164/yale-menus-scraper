@@ -13,13 +13,13 @@ nav {
   justify-content: space-between;
 }
 
-a {
+.nav-links {
   font-size: large;
   width: 70px;
   color: wheat;
 }
 
-a:hover {
+.nav-links:hover {
   color: rgb(60, 70, 255);
 }
 

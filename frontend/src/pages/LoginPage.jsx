@@ -1,7 +1,7 @@
 import { api } from "../utilities.jsx";
 import { useState, useContext } from "react";
 import { userContext } from "../App";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 export const LoginPage = () => {
   const { setUser, setVerified } = useContext(userContext);
@@ -57,6 +57,7 @@ export const LoginPage = () => {
       />
       <p className="warning-text const-height">{warningText}</p>
     <input className={disableButton ? "styled-button-disabled" : "styled-button"} type="submit" disabled={disableButton} />
+    <Link className="forgot-link" to="/forgot">Forgot Password?</Link>
     </form>
   );
 };
