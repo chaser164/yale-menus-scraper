@@ -43,7 +43,7 @@ class User(AbstractUser):
     # Sends email with 6 digit code
     # populates "verification" field with hashed 6 digit code
     # Updates timestamp to now if email is sent successfully
-    def send_verification_email(self):
+    def send_verification_email(self, for_reset):
         with smtplib.SMTP('smtp.gmail.com', 587) as server:
             server.starttls()
             load_dotenv()
@@ -53,7 +53,7 @@ class User(AbstractUser):
             msg['From'] = 'ymenus.scraper@gmail.com'
             msg['To'] = self.email
             # Attach the html
-            text = MIMEText(self.generate_code(), 'html')
+            text = MIMEText(self.generate_code(for_reset), 'html')
             msg.attach(text)
             # Send email
             server.send_message(msg)
@@ -61,7 +61,7 @@ class User(AbstractUser):
             self.save()
 
 
-    def generate_code(self):
+    def generate_code(self, for_reset):
         # Generate code
         code = random.randint(100000, 999999)
         hashed_code = User.hash(code)
@@ -79,6 +79,7 @@ class User(AbstractUser):
                 <table width="50%" cellspacing="0" cellpadding="0">
                 <tr>
                     <h1>Yale Menus Scraper Email Confirmation</h1>
+                    <h2>{"Password Reset" if for_reset else "Account Activation"}</h2>
                 </tr>
                 <tr>
                     <p>Your code is</p>

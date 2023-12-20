@@ -57,6 +57,7 @@ export const LoginPage = () => {
       />
       <p className="warning-text const-height">{warningText}</p>
     <input className={disableButton ? "styled-button-disabled" : "styled-button"} type="submit" disabled={disableButton} />
+    <br />
     <Link className="forgot-link" to="/forgot">Forgot Password?</Link>
     </form>
   );

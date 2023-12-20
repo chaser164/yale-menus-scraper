@@ -5,7 +5,8 @@ import { useNavigate } from "react-router-dom";
 export const ForgotPage = () => {
   const [warningText, setWarningText] = useState("");
   const [userName, setUserName] = useState("");
-  const [disableButton, setDisableButton] = useState(false)
+  const [disableButton, setDisableButton] = useState(false);
+  const [showReset, setShowReset] = useState(false);
   const navigate = useNavigate();
 
   const sendCode = async (e) => {
@@ -29,6 +30,9 @@ export const ForgotPage = () => {
   };
 
   return (
+    showReset ? 
+    <p>reset page</p>
+    :
     <form onSubmit={(e) => sendCode(e)} autoComplete="on">
       <h3 className="white-font">Enter Your Email</h3>
       <input

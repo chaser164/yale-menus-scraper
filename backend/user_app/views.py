@@ -29,7 +29,7 @@ class Sign_up(APIView):
             return Response({"message": "Email already in use"}, status=HTTP_400_BAD_REQUEST)
         # Send email attempt
         try:
-            user.send_verification_email()
+            user.send_verification_email(False)
         except:
             return Response({"message": "Error sending email"}, staut=HTTP_400_BAD_REQUEST)
         token = Token.objects.create(user=user)
@@ -93,22 +93,53 @@ class Validate(APIView):
     def post(self, request):
         code = request.data["code"]
         message = request.user.check_code(code)
-        is_valid = message == "valid code"
         return Response(
-            {"message": message, "is_valid": is_valid}
+            {"message": message, "is_valid": message == "valid code"}
         )
-    
+ 
+   
 class Resend(APIView):
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
    
     def post(self, request):
         try:
-            request.user.send_verification_email()
+            request.user.send_verification_email(False)
         except:
             return Response(
-                {"message": "Error sending email"}
+                {"message": "Error sending email"},
+                status=HTTP_400_BAD_REQUEST
             )
         return Response(
             {"message": "Email sent!"}
         )
+
+
+class InitiateReset(APIView):
+    def post(self, request):
+        user = get_object_or_404(User, email=request.data["email"])
+        try:
+            user.send_verification_email(True)
+        except:
+            return Response(
+                {"message": "Error sending email"},
+                status=HTTP_400_BAD_REQUEST
+            )
+        return Response(
+            {"message": "Email sent!"}
+        )
+    
+    
+class ValidateReset(APIView):
+    def post(self, request):
+        user = get_object_or_404(User, email=request.data['email'])
+        code = request.data['code']
+        message = user.check_code(code)
+        is_valid = message == "valid code"
+        # With a valid code, reset password
+        if is_valid:
+            user.set_password(request.data['password'])
+        return Response(
+            {"message": message, "is_valid": is_valid}
+        )
+ 
