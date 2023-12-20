@@ -9,11 +9,19 @@ export const SettingsPage = () => {
   const deleteAccount = async () => {
     setLoading(true);
     try {
-      await api.delete(`users/me`);
+      await api.delete("users/me");
     }
     catch {
       console.log("Deletion attempt failed");
     }
+    // Remove the token from secure storage (e.g., localStorage)
+    localStorage.removeItem("token");
+    delete api.defaults.headers.common["Authorization"];
+    // set the user using with useContext to allow all other pages that need user information
+    setUser(null);
+    // set verified to false after logout
+    setVerified(false);
+    navigate("/login");
     setLoading(false);
   }
 

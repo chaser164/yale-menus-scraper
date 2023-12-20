@@ -80,6 +80,8 @@ class A_user(APIView):
             return Response(UserSerializer(request.user).data)
         
     def delete(self, request, userid=None):
+        # Log user out and delete the user
+        request.user.auth_token.delete()
         request.user.delete()
         return Response(status=HTTP_204_NO_CONTENT)
         
