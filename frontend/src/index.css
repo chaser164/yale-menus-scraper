@@ -158,3 +158,8 @@ li {
   flex-direction: row;
   align-items: center;
 }
+
+.confirmation-holder {
+  display: flex;
+  flex: row;
+}

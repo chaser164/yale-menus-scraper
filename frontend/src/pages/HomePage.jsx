@@ -1,5 +1,5 @@
 import { api } from "../utilities.jsx";
-import { useContext, useState, useEffect, useRef, useSyncExternalStore } from "react";
+import { useContext, useState, useEffect, useRef } from "react";
 import { userContext } from "../App";
 import { Loader } from "../components/Loader.jsx";
 
