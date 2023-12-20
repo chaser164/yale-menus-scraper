@@ -1,8 +1,11 @@
 import { api } from "../utilities.jsx";
-import { useContext, useState, useEffect, useRef } from "react";
+import { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { userContext } from "../App.jsx";
 
 export const SettingsPage = () => {
+  const { setUser, setVerified } = useContext(userContext);
+  const navigate = useNavigate();
   const [dangerZoneVisible, setDangerZoneVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   
@@ -35,8 +38,8 @@ export const SettingsPage = () => {
       :
       <div className="confirmation-holder">
         <h3 className="white-font">Are you sure?</h3>
-        <button onClick={() => setDangerZoneVisible(false)} className="styled-button small">Cancel</button>
-        <button onClick={deleteAccount} className="styled-button small">Yes</button>
+        <button onClick={() => setDangerZoneVisible(false)} className={loading ? "styled-button-disabled small" : "styled-button small"} disabled={loading}>Cancel</button>
+        <button onClick={deleteAccount} className={loading ? "styled-button-disabled small" : "styled-button small"} disabled={loading}>Yes</button>
       </div>
       }
     </div>
