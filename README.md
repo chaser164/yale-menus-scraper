@@ -1,7 +1,7 @@
 # Yale Menus Scraper
 
 ## **TODO:**
-- Password reset
+- Add logout guards
 - Configure cookie auth
 
 ## **API ENDPOINTS**
