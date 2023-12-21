@@ -23,10 +23,10 @@ class Sign_up(APIView):
     def post(self, request):
         request.data["username"] = request.data["email"]
         # Add user attempt
-        try:
-            user = User.objects.create_user(**request.data)
-        except:
-            return Response({"message": "Email already in use"}, status=HTTP_400_BAD_REQUEST)
+        # try:
+        user = User.objects.create_user(**request.data)
+        # except:
+        #     return Response({"message": "Email already in use"}, status=HTTP_400_BAD_REQUEST)
         # Send email attempt
         try:
             user.send_email(False)
