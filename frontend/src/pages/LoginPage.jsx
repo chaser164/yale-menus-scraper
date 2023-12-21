@@ -1,15 +1,22 @@
 import { api } from "../utilities.jsx";
-import { useState, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 import { userContext } from "../App";
 import { useNavigate, Link } from "react-router-dom";
 
 export const LoginPage = () => {
-  const { setUser, setVerified } = useContext(userContext);
+  const { setUser, setVerified, passwordChanged, setPasswordChanged } = useContext(userContext);
   const [warningText, setWarningText] = useState("");
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [disableButton, setDisableButton] = useState(false)
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if(passwordChanged) {
+      setPasswordChanged(false);
+      alert("Password updated successfully!");
+    }
+}, []);
 
   const logIn = async (e) => {
     e.preventDefault();

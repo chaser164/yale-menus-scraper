@@ -29,9 +29,10 @@ class Sign_up(APIView):
             return Response({"message": "Email already in use"}, status=HTTP_400_BAD_REQUEST)
         # Send email attempt
         try:
-            user.send_verification_email(False)
+            user.send_email(False)
         except:
-            return Response({"message": "Error sending email"}, staut=HTTP_400_BAD_REQUEST)
+            user.delete()
+            return Response({"message": "Error sending email, try again"}, status=HTTP_400_BAD_REQUEST)
         token = Token.objects.create(user=user)
         return Response(
             {"token": token.key, "user": UserSerializer(user).data}, status=HTTP_201_CREATED
@@ -92,7 +93,7 @@ class Validate(APIView):
    
     def post(self, request):
         code = request.data["code"]
-        message = request.user.check_code(code)
+        message = request.user.check_code(code, False)
         return Response(
             {"message": message, "is_valid": message == "valid code"}
         )
@@ -104,10 +105,10 @@ class Resend(APIView):
    
     def post(self, request):
         try:
-            request.user.send_verification_email(False)
+            request.user.send_email(False)
         except:
             return Response(
-                {"message": "Error sending email"},
+                {"message": "Error sending email. Try again."},
                 status=HTTP_400_BAD_REQUEST
             )
         return Response(
@@ -119,10 +120,10 @@ class InitiateReset(APIView):
     def post(self, request):
         user = get_object_or_404(User, email=request.data["email"])
         try:
-            user.send_verification_email(True)
+            user.send_email(True)
         except:
             return Response(
-                {"message": "Error sending email"},
+                {"message": "Error sending email, try again"},
                 status=HTTP_400_BAD_REQUEST
             )
         return Response(
@@ -134,11 +135,13 @@ class ValidateReset(APIView):
     def post(self, request):
         user = get_object_or_404(User, email=request.data['email'])
         code = request.data['code']
-        message = user.check_code(code)
+        message = user.check_code(code, True)
         is_valid = message == "valid code"
-        # With a valid code, reset password
+        # With a valid code, reset password and un-validate password reset for the future
         if is_valid:
             user.set_password(request.data['password'])
+            user.reset = ''
+            user.save()
         return Response(
             {"message": message, "is_valid": is_valid}
         )

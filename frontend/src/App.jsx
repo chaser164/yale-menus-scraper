@@ -14,6 +14,7 @@ function App() {
   const [user, setUser] = useState(null);
   const [hasLoaded, setHasLoaded] = useState(false);
   const [verified, setVerified] = useState(false);
+  const [passwordChanged, setPasswordChanged] = useState(false);
 
   const whoAmI = async () => {
     // Check if a token is stored in the localStorage
@@ -103,7 +104,7 @@ function App() {
           </nav>
         </header>
       </div>
-      <userContext.Provider value={{ user, setUser, verified, setVerified }}>
+      <userContext.Provider value={{ user, setUser, verified, setVerified, passwordChanged, setPasswordChanged }}>
         <Outlet />
       </userContext.Provider>
     </div>)

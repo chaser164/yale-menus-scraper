@@ -4,7 +4,7 @@ import { userContext } from "../App";
 import { Loader } from "../components/Loader.jsx";
 
 export const HomePage = () => {
-  const { user, verified, setVerified } = useContext(userContext);
+  const { user, verified, setVerified, passwordChanged, setPasswordChanged } = useContext(userContext);
   const foodItemInput = useRef(null);
   const [disableButton, setDisableButton] = useState(false);
   const [disableResend, setDisableResend] = useState(false);
@@ -17,6 +17,7 @@ export const HomePage = () => {
   const [newPref, setNewPref] = useState("");
   const [loading, setLoading] = useState(true);
   const [warningMessage, setWarningMessage] = useState("");
+  const [clock, setClock] = useState(30);
 
   // Get user prefs
   const getPrefs = async () => {
@@ -29,13 +30,25 @@ export const HomePage = () => {
       setWarningMessage("Could not load preferences");
       console.error("Could not load preferences")
     }
-    setLoading(false);
     setDisableAdd(false);
+    setLoading(false);
   }; 
 
   useEffect(() => {
       getPrefs();
   }, []);
+
+  useEffect(() => {
+    // Guard
+    if(loading) {
+      return;
+    }
+    // After initial loading done, potentially alert of password change
+    if(passwordChanged) {
+      setPasswordChanged(false);
+      alert("Password updated successfully!");
+    }
+  }, [loading]);
 
   useEffect(() => {
     // Focus on the text input when showAdd is true
@@ -65,6 +78,19 @@ export const HomePage = () => {
     }
   };
 
+  const timer = (secs) => {
+    if(secs == 0) {
+        setDisableResend(false);
+        setClock(30);
+    }
+    else {
+        setTimeout(() => {
+            setClock(secs - 1);
+            timer(secs - 1);
+        }, 1000);
+    }
+  }
+
   const resend = async () => {
     setDisableResend(true);
     try {
@@ -72,12 +98,11 @@ export const HomePage = () => {
     }
     catch {
       setDisableResend(false);
-      setMessage("Error sending email. Try again.")
+      setMessage("Error sending email, Try again");
+      return;
     }
-    // Disable email button for 5 seconds
-    setTimeout(() => {
-      setDisableResend(false);
-    }, 5000);
+    // Disable email button for 30 seconds
+    timer(30);
   }; 
 
   const handleKeyDown = (e) => {
@@ -172,7 +197,7 @@ export const HomePage = () => {
           <p className="warning-text">{message}</p>
           <input className={disableButton ? "styled-button-disabled" : "styled-button"} type="submit" disabled={disableButton} />
         </form>
-        <button onClick={resend} className={disableResend ? "styled-button-disabled wide" : "styled-button wide"} disabled={disableResend}>Resend email</button>
+        <button onClick={resend} className={disableResend ? "styled-button-disabled wide" : "styled-button wide"} disabled={disableResend}>Resend email {disableResend && `(${clock})`}</button>
       </>
       :
       <div>

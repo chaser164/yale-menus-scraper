@@ -17,33 +17,42 @@ class User(AbstractUser):
         max_length=255,
         unique=True,
     )
-    timestamp = models.DateTimeField(auto_now_add=True)
+    verification_timestamp = models.DateTimeField(auto_now_add=True)
+    reset_timestamp = models.DateTimeField(auto_now_add=True)
     verification = models.TextField(max_length=500, default='')
+    reset = models.TextField(max_length=500, default='')
     # notice the absence of a "Password field", that is built in.
     # django uses the 'username' to identify users by default, but many modern applications use 'email' instead
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = [] # Email & Password are required by default.
 
-    def check_code(self, code):
-        if User.hash(code) != self.verification:
+    def check_code(self, code, for_reset):
+        if User.hash(code) != (self.reset if for_reset else self.verification):
             return "invalid code"
-        elif self.is_expired():
+        elif self.is_expired(for_reset):
             return "expired code"
         else:
-            self.verification = "verified"
+            if for_reset:
+                self.reset = "verified"
+            else:
+                self.verification = "verified"
             self.save()
             return "valid code"
 
 
-    def is_expired(self):
+    def is_expired(self, for_reset):
         current_time = timezone.now()
-        time_difference = current_time - self.timestamp
+        if for_reset:
+            time_difference = current_time - self.reset_timestamp
+        else:
+            time_difference = current_time - self.verification_timestamp
         return time_difference.total_seconds() > EXPIRATION_TIME
+    
 
     # Sends email with 6 digit code
     # populates "verification" field with hashed 6 digit code
     # Updates timestamp to now if email is sent successfully
-    def send_verification_email(self, for_reset):
+    def send_email(self, for_reset):
         with smtplib.SMTP('smtp.gmail.com', 587) as server:
             server.starttls()
             load_dotenv()
@@ -57,7 +66,10 @@ class User(AbstractUser):
             msg.attach(text)
             # Send email
             server.send_message(msg)
-            self.timestamp = timezone.now()
+            if for_reset:
+                self.reset_timestamp = timezone.now()
+            else:
+                self.verification_timestamp = timezone.now()
             self.save()
 
 
@@ -66,7 +78,10 @@ class User(AbstractUser):
         code = random.randint(100000, 999999)
         hashed_code = User.hash(code)
         # Save hashed code in database
-        self.verification = hashed_code
+        if for_reset:
+            self.reset = hashed_code
+        else:
+            self.verification = hashed_code
         self.save()
         return f"""
             <!DOCTYPE html>
