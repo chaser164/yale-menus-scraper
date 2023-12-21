@@ -12,7 +12,7 @@
 + __GET__ returns preference, must belong to the caller
 + __DELETE__ deletes preference, must belong to the caller
 ### **api/v1/users/signup/**
-+ __POST__ signs up a user
++ __POST__ signs up a user, sending verification email
 ### **api/v1/users/login/**
 + __POST__ log in a user
 ### **api/v1/users/logout/**
@@ -28,3 +28,7 @@
 + __POST__ validate a user's 6-digit pin
 ### **api/v1/users/validate/**
 + __POST__ resend validation email
+### **api/v1/users/init-reset/**
++ __POST__ checks if given email exists. If it does, generate reset pin
+### **api/v1/users/validate-reset/**
++ __POST__ check if given reset pin matches. If it does, update the password
