@@ -4,7 +4,7 @@ import { userContext } from "../App";
 import { Loader } from "../components/Loader.jsx";
 
 export const HomePage = () => {
-  const { user, verified, setVerified, passwordChanged, setPasswordChanged } = useContext(userContext);
+  const { user, verified, setVerified, passwordChanged, setPasswordChanged, logoutLoading, setLogoutLoading } = useContext(userContext);
   const foodItemInput = useRef(null);
   const [disableButton, setDisableButton] = useState(false);
   const [disableResend, setDisableResend] = useState(false);
@@ -35,6 +35,7 @@ export const HomePage = () => {
   }; 
 
   useEffect(() => {
+      setLogoutLoading(false);
       getPrefs();
   }, []);
 
@@ -58,6 +59,10 @@ export const HomePage = () => {
   }, [showAdd]);
 
   const validate = async (e) => {
+    // Guard
+    if(logoutLoading) {
+      return
+    }
     e.preventDefault();
     setDisableButton(true);
     let response;
@@ -92,6 +97,10 @@ export const HomePage = () => {
   }
 
   const resend = async () => {
+    // Guard
+    if(logoutLoading) {
+      return
+    }
     setDisableResend(true);
     try {
       await api.post("users/resend/");
@@ -106,6 +115,10 @@ export const HomePage = () => {
   }; 
 
   const handleKeyDown = (e) => {
+    // Guard
+    if(logoutLoading) {
+      return
+    }
     if (e.key === "Enter" && !disableAdd) {
       e.preventDefault();
       addPref();
@@ -113,9 +126,13 @@ export const HomePage = () => {
   };
 
   const addPref = async () => {
+    // Guard
+    if(logoutLoading) {
+      return
+    }
     setDisableAdd(true);
     setWarningMessage("");
-    // Guards
+    // More guards
     if(newPref.length == 0) {
       setWarningMessage("Cannot be empty");
       setDisableAdd(false);
@@ -155,6 +172,10 @@ export const HomePage = () => {
   };
 
   const delPref = async (id) => {
+    // Guard
+    if(logoutLoading) {
+      return
+    }
     // Immediately update frontend
     const prevPrefsList = prefsList;
     const newPrefsList = [...prefsList].filter((pref) => pref.id !== id);
@@ -172,11 +193,19 @@ export const HomePage = () => {
   };
 
   const changeAddVis = (state) => {
+    // Guard
+    if(logoutLoading) {
+      return
+    }
     setShowAdd(state);
     setWarningMessage("");
   }
 
   const changeRemoveVis = (state) => {
+    // Guard
+    if(logoutLoading) {
+      return
+    }
     setShowRemove(state);
     setWarningMessage("");
   }

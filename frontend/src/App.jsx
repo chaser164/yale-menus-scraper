@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import "./App.css";
-import { Link, Outlet, useNavigate, useLocation } from "react-router-dom";
+import { Link, Outlet, useNavigate, useLocation, json } from "react-router-dom";
 import { createContext } from "react";
 import { api } from "./utilities.jsx";
 
@@ -15,6 +15,7 @@ function App() {
   const [hasLoaded, setHasLoaded] = useState(false);
   const [verified, setVerified] = useState(false);
   const [passwordChanged, setPasswordChanged] = useState(false);
+  const [logoutLoading, setLogoutLoading] = useState(false);
 
   const whoAmI = async () => {
     // Check if a token is stored in the localStorage
@@ -63,7 +64,16 @@ function App() {
   }, [location]);
   
   const logOut = async () => {
-    let response = await api.post("users/logout/");
+    setLogoutLoading(true);
+    let response;
+    try {
+      response = await api.post("users/logout/");
+    }
+    catch {
+      setLogoutLoading(false);
+      console.log("could not log out");
+      return;
+    }
     if (response.status === 204) {
       // Remove the token from secure storage (e.g., localStorage)
       localStorage.removeItem("token");
@@ -94,7 +104,7 @@ function App() {
             {user ? 
               <div className="navbar-aligner">
                 <button className="settings-button" onClick={() => navigate("/settings")}>⚙</button>
-                <button className="styled-button" onClick={logOut}>Log Out</button>
+                <button className={!logoutLoading ? "styled-button" : "styled-button-disabled"} disabled={logoutLoading} onClick={logOut}>Log Out</button>
               </div> :
               <>
                 <Link className="nav-links" to="/signup">Sign Up</Link>
@@ -104,7 +114,16 @@ function App() {
           </nav>
         </header>
       </div>
-      <userContext.Provider value={{ user, setUser, verified, setVerified, passwordChanged, setPasswordChanged }}>
+      <userContext.Provider 
+        value={{ 
+          user, 
+          setUser, 
+          verified, 
+          setVerified, 
+          passwordChanged, 
+          setPasswordChanged,
+          logoutLoading,
+          setLogoutLoading }}>
         <Outlet />
       </userContext.Provider>
     </div>)

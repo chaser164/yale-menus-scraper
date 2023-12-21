@@ -4,13 +4,17 @@ import { useNavigate } from "react-router-dom";
 import { userContext } from "../App.jsx";
 
 export const SettingsPage = () => {
-  const { setUser, setVerified } = useContext(userContext);
+  const { setUser, setVerified, logoutLoading } = useContext(userContext);
   const navigate = useNavigate();
   const [warningMessage, setWarningMessage] = useState("");
   const [dangerZoneVisible, setDangerZoneVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   
   const deleteAccount = async () => {
+    // Guard
+    if(logoutLoading) {
+      return
+    }
     setLoading(true);
     try {
       await api.delete("users/me");
@@ -34,6 +38,10 @@ export const SettingsPage = () => {
   }
 
   const changeDangerVis = (state) => {
+    // Guard
+    if(logoutLoading) {
+      return
+    }
     setDangerZoneVisible(state);
     setWarningMessage("");
   }
