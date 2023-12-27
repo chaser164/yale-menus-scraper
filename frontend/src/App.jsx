@@ -83,7 +83,7 @@ function App() {
     (hasLoaded && 
     <div id="app">
       <div className="navbar-container">
-        <div className="white-font title" onClick={goHome}>Yale Menus Scraper!</div>
+        <div className="white-font title" onClick={goHome}>Yale Menus Scraper</div>
         <br />
         <header>
           <nav>
