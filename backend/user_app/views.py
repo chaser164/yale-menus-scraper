@@ -1,4 +1,3 @@
-from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import authenticate
 from datetime import datetime, timedelta
@@ -22,7 +21,6 @@ from .serializers import UserSerializer
 
 class Sign_up(APIView):
     
-    @csrf_exempt
     def post(self, request):
         request.data["username"] = request.data["email"]
         # Add user attempt
@@ -45,7 +43,6 @@ class Sign_up(APIView):
     
 class Log_in(APIView):
 
-    @csrf_exempt
     def post(self, request):
         email = request.data.get("email")
         password = request.data.get("password")
@@ -65,7 +62,6 @@ class Log_out(APIView):
     authentication_classes = [HttpOnlyTokenAuthentication]
     permission_classes = [IsAuthenticated]
 
-    @csrf_exempt
     def post(self, request):
         request.user.auth_token.delete()
         response = Response(status=HTTP_204_NO_CONTENT)
@@ -77,7 +73,6 @@ class All_users(APIView):
     authentication_classes = [HttpOnlyTokenAuthentication]
     permission_classes = [IsAuthenticated]
 
-    @csrf_exempt
     def get(self, request):
         return Response(UserSerializer(User.objects.all(), many=True).data)
 
@@ -86,7 +81,6 @@ class A_user(APIView):
     authentication_classes = [HttpOnlyTokenAuthentication]
     permission_classes = [IsAuthenticated]
 
-    @csrf_exempt
     def get(self, request, userid=None):
         if userid is not None:
             user = get_object_or_404(User, id = userid)
@@ -95,7 +89,6 @@ class A_user(APIView):
             # Accessing your own info with "me" endpoint
             return Response(UserSerializer(request.user).data)
 
-    @csrf_exempt
     def delete(self, request, userid=None):
         # Log user out and delete the user
         request.user.auth_token.delete()
@@ -110,7 +103,6 @@ class Validate(APIView):
     authentication_classes = [HttpOnlyTokenAuthentication]
     permission_classes = [IsAuthenticated]
    
-    @csrf_exempt
     def post(self, request):
         code = request.data["code"]
         message = request.user.check_code(code, False)
@@ -123,7 +115,6 @@ class Resend(APIView):
     authentication_classes = [HttpOnlyTokenAuthentication]
     permission_classes = [IsAuthenticated]
    
-    @csrf_exempt
     def post(self, request):
         try:
             request.user.send_email(False)
@@ -138,7 +129,7 @@ class Resend(APIView):
 
 
 class InitiateReset(APIView):
-    @csrf_exempt
+
     def post(self, request):
         user = get_object_or_404(User, email=request.data["email"])
         try:
@@ -154,7 +145,7 @@ class InitiateReset(APIView):
     
     
 class ValidateReset(APIView):
-    @csrf_exempt
+
     def post(self, request):
         user = get_object_or_404(User, email=request.data['email'])
         code = request.data['code']
