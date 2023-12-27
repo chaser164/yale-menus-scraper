@@ -140,7 +140,7 @@ REST_FRAMEWORK = {
 CORS_ALLOW_ALL_ORIGINS = False
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173", #development server
+    'localhost:5173', #development server
 ]
 
 # cookies settings
