@@ -6,14 +6,16 @@ from rest_framework.status import (
     HTTP_204_NO_CONTENT,
     HTTP_400_BAD_REQUEST,
 )
+
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
+from utilities import HttpOnlyTokenAuthentication
 
 from .models import Pref
 from .serializers import PrefSerializer
 
 class All_prefs(APIView):
-    authentication_classes = [TokenAuthentication]
+    authentication_classes = [HttpOnlyTokenAuthentication]
     permission_classes = [IsAuthenticated]
     # The alternative: using "if request.user.is_authenticated: ..." for manually deciding which logic require authentication
 
@@ -32,7 +34,7 @@ class All_prefs(APIView):
         return Response(PrefSerializer(new_pref).data, status=HTTP_201_CREATED)
         
 class A_pref(APIView):
-    authentication_classes = [TokenAuthentication]
+    authentication_classes = [HttpOnlyTokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get(self, request, prefid):

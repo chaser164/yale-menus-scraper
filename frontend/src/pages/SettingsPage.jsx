@@ -21,14 +21,9 @@ export const SettingsPage = () => {
     }
     catch {
       setWarningMessage("Deletion attempt failed");
-      console.error("Deletion attempt failed");
       setLoading(false);
       return;
     }
-    // Log out user
-    // Remove the token from secure storage (e.g., localStorage)
-    localStorage.removeItem("token");
-    delete api.defaults.headers.common["Authorization"];
     // set the user using with useContext to allow all other pages that need user information
     setUser(null);
     // set verified to false after logout

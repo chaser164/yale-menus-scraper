@@ -62,10 +62,7 @@ export const ResetPasswordForm = (props) => {
                 navigate("/login");
                 return;
             }
-            let token = response.data.token;
             let user = response.data.user;
-            localStorage.setItem("token", token);
-            api.defaults.headers.common["Authorization"] = `Token ${token}`;
             setVerified(user.is_verified);
             setUser(user);
             navigate("/");

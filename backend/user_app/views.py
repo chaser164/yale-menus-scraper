@@ -1,6 +1,6 @@
-#user_app.views
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import authenticate
+from datetime import datetime, timedelta
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.status import (
@@ -13,6 +13,7 @@ from rest_framework.status import (
 from rest_framework.authtoken.models import Token
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
+from utilities import HttpOnlyTokenAuthentication
 
 from .models import User
 from .serializers import UserSerializer
@@ -34,9 +35,11 @@ class Sign_up(APIView):
             user.delete()
             return Response({"message": "Error sending email, try again"}, status=HTTP_400_BAD_REQUEST)
         token = Token.objects.create(user=user)
-        return Response(
-            {"token": token.key, "user": UserSerializer(user).data}, status=HTTP_201_CREATED
-        )
+        life_time = datetime.now() + timedelta(days=7)
+        format_life_time = life_time.strftime("%a, %d %b %Y %H:%M:%S GMT")
+        response = Response({"user": UserSerializer(user).data})
+        response.set_cookie(key="token", value=token.key, httponly=True, secure=True, samesite="None", expires=format_life_time)
+        return response
     
 class Log_in(APIView):
 
@@ -46,22 +49,28 @@ class Log_in(APIView):
         user = authenticate(username=email, password=password)
         if user:
             token, _ = Token.objects.get_or_create(user=user)
-            return Response({"token": token.key, "user": UserSerializer(user).data})
+            life_time = datetime.now() + timedelta(days=7)
+            format_life_time = life_time.strftime("%a, %d %b %Y %H:%M:%S GMT")
+            response = Response({"user": UserSerializer(user).data})
+            response.set_cookie(key="token", value=token.key, httponly=True, secure=True, samesite="None", expires=format_life_time)
+            return response
         else:
             return Response({"message": "No user matching credentials"}, status=HTTP_404_NOT_FOUND)
 
 
 class Log_out(APIView):
-    authentication_classes = [TokenAuthentication]
+    authentication_classes = [HttpOnlyTokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
         request.user.auth_token.delete()
-        return Response(status=HTTP_204_NO_CONTENT)
+        response = Response(status=HTTP_204_NO_CONTENT)
+        response.delete_cookie("token", samesite="None")
+        return response
 
 
 class All_users(APIView):
-    authentication_classes = [TokenAuthentication]
+    authentication_classes = [HttpOnlyTokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
@@ -69,7 +78,7 @@ class All_users(APIView):
 
 
 class A_user(APIView):
-    authentication_classes = [TokenAuthentication]
+    authentication_classes = [HttpOnlyTokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get(self, request, userid=None):
@@ -83,12 +92,15 @@ class A_user(APIView):
     def delete(self, request, userid=None):
         # Log user out and delete the user
         request.user.auth_token.delete()
+        response = Response(status=HTTP_204_NO_CONTENT)
+        response.delete_cookie("token")
+        request.user.auth_token.delete()
         request.user.delete()
-        return Response(status=HTTP_204_NO_CONTENT)
+        return response
         
 
 class Validate(APIView):
-    authentication_classes = [TokenAuthentication]
+    authentication_classes = [HttpOnlyTokenAuthentication]
     permission_classes = [IsAuthenticated]
    
     def post(self, request):
@@ -100,7 +112,7 @@ class Validate(APIView):
  
    
 class Resend(APIView):
-    authentication_classes = [TokenAuthentication]
+    authentication_classes = [HttpOnlyTokenAuthentication]
     permission_classes = [IsAuthenticated]
    
     def post(self, request):

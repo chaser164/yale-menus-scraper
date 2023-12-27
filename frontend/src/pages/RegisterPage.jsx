@@ -49,11 +49,6 @@ export const RegisterPage = () => {
     }
     setDisableButton(false);
     let user = response.data.user;
-    let token = response.data.token;
-    // Store the token securely (e.g., in localStorage or HttpOnly cookies)
-    localStorage.setItem("token", token);
-    api.defaults.headers.common["Authorization"] = `Token ${token}`;
-    // set the user using with useContext to allow all other pages that need user information
     setUser(user);
     navigate("/");
   };

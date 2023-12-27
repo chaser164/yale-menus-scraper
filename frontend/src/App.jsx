@@ -18,29 +18,20 @@ function App() {
   const [logoutLoading, setLogoutLoading] = useState(false);
 
   const whoAmI = async () => {
-    // Check if a token is stored in the localStorage
-    let token = localStorage.getItem("token");
-    if (token) {
-      // If the token exists, set it in the API headers for authentication
-      api.defaults.headers.common["Authorization"] = `Token ${token}`;
-      // Fetch the user data from the server using the API
-      let response = await api.get("users/me");
-      // Check if the response contains the user data (email field exists)
-      if (response.data.email) {
-        // Enable verification if it's verified
-        setVerified(response.data.is_verified);
-        // Set the user data in the context or state (assuming `setUser` is a state update function)
-        setUser(response.data);
-        // If the user is authenticated and there is a stored lastVisited page,
-        // navigate to the lastVisited page; otherwise, navigate to the default homepage "/home"
-        if (lastVisited.current) {
-          navigate(lastVisited.current);
-        } else {
-          navigate("/");
-        }
+    // If the token exists, set it in the API headers for authentication
+    let response;
+    try {
+      response = await api.get("users/me");
+      setUser(response.data);
+      setVerified(response.data.is_verified);
+      // Navigate to logged-in page
+      if (lastVisited.current) {
+        navigate(lastVisited.current);
+      } else {
+        navigate("/");
       }
-    } else {
-      // If no token is found, navigate to the login page
+    }
+    catch {
       navigate("/login");
     }
     setHasLoaded(true)
@@ -75,20 +66,15 @@ function App() {
       return;
     }
     if (response.status === 204) {
-      // Remove the token from secure storage (e.g., localStorage)
-      localStorage.removeItem("token");
-      delete api.defaults.headers.common["Authorization"];
-      // set the user using with useContext to allow all other pages that need user information
       setUser(null);
-      // set verified to false after logout
       setVerified(false);
       navigate("/login");
     }
   };
 
   const goHome = () => {
-    let token = localStorage.getItem("token");
-    if(token) {
+    // Go home when logged in
+    if(user) {
       navigate("/");
     }
   }
