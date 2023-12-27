@@ -150,7 +150,3 @@ CORS_ALLOW_CREDENTIALS = True
 SESSION_COOKIE_SECURE = True
 
 SESSION_COOKIE_HTTPONLY = True
-
-CORS_ALLOW_HEADERS = (
-    "Access-Control-Allow-Credentials"
-)
