@@ -55,7 +55,7 @@ export const RegisterPage = () => {
 
   return (
     <form onSubmit={(e) => signUp(e)} autoComplete="on">
-      <h3 className="white-font">Sign Up</h3>
+      <h3 className="white-font label">Sign Up</h3>
       <input
         className="field"
         placeholder="Email"

@@ -44,7 +44,7 @@ export const LoginPage = () => {
 
   return (
     <form onSubmit={(e) => logIn(e)} autoComplete="on">
-      <h3 className="white-font">Log In</h3>
+      <h3 className="white-font label">Log In</h3>
       <input
         className="field"
         placeholder="Email"
