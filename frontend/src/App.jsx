@@ -21,7 +21,7 @@ function App() {
     // If the token exists, set it in the API headers for authentication
     let response;
     try {
-      response = await api.get("users/me");
+      response = await api.get("users/me/");
       setUser(response.data);
       setVerified(response.data.is_verified);
       // Navigate to logged-in page
@@ -83,7 +83,7 @@ function App() {
     (hasLoaded && 
     <div id="app">
       <div className="navbar-container">
-        <div className="white-font title" onClick={goHome}>Yale Menus Scraper</div>
+        <div className="white-font title" onClick={goHome}>Yale Menus Scraper!</div>
         <br />
         <header>
           <nav>
