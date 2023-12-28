@@ -2,7 +2,7 @@
 import axios from "axios";
 
 export const api = axios.create({
-  baseURL: "https://chaser164.pythonanywhere.com/api/v1/",
+  baseURL: "https://www.yale-menus-scraper.com/api/v1/",
   withCredentials: true,
 });
 
