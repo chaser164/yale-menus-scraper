@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-a)_xid$aaie_z#kb)q=+8&jp34ci&*1%kj-)v$*ezz5v591g37
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['chaser164.pythonanywhere.com', '127.0.0.1']
+ALLOWED_HOSTS = ['https://www.yale-menus-scraper.com', '127.0.0.1']
 
 
 # Application definition
@@ -141,7 +141,7 @@ CORS_ALLOW_ALL_ORIGINS = False
 
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173', #development server
-    'https://chaser164.pythonanywhere.com',
+    'https://www.yale-menus-scraper.com',
 ]
 
 # cookies settings
