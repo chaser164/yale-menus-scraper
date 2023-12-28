@@ -129,7 +129,7 @@ export const ResetPasswordForm = (props) => {
             value={passwordConf}
             onChange={(e) => setPasswordConf(e.target.value)}
             />
-            <p className="warning-text">{warningText}</p>
+            <p className="warning-text center">{warningText}</p>
             <input className={disableButton ? "styled-button-disabled" : "styled-button"} type="submit" disabled={disableButton} />
         </form>
         <button onClick={resend} className={disableResend ? "styled-button-disabled wide" : "styled-button wide"} disabled={disableResend}>Resend email {disableResend && `(${clock})`}</button>

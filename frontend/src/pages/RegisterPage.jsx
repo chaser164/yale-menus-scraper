@@ -77,7 +77,7 @@ export const RegisterPage = () => {
         value={passwordConf}
         onChange={(e) => setPasswordConf(e.target.value)}
       />
-      <p className="warning-text">{warningText}</p>
+      <p className="warning-text center">{warningText}</p>
       <input className={disableButton ? "styled-button-disabled" : "styled-button"} type="submit" disabled={disableButton} />
     </form>
   );

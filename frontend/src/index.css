@@ -133,22 +133,26 @@ li {
 }
 
 .warning-text {
-  text-align: center;
-  width: 150px;
+  width: 400px;
   color: rgb(252, 252, 122);
   height: 17px;
 }
 
-.navbar-aligner {
-  width: 175px;
-  display: flex;
-  justify-content: space-between;
+@media (min-width: 601px) {
+  .navbar-aligner {
+    width: 190px;
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+  }
 }
 
 @media (max-width: 600px) {
   .navbar-aligner {
+    height: 110px;
+    display: flex;
     flex-direction: column-reverse;
-    justify-content: flex-end;
+    align-items: flex-end;
   }
 }
 
@@ -190,6 +194,6 @@ li {
   width: 80px;
 }
 
-/* .log-out-button {
-  height: 40px;
-} */
+input {
+  -webkit-text-size-adjust: none; /* Disable autozoom on iPhone */
+}
