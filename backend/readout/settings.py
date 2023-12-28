@@ -142,6 +142,7 @@ CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173', #development server
     'https://yale-menus-scraper.netlify.app/*',
+    'https://chaser164.pythonanywhere.com',
 ]
 
 # cookies settings
