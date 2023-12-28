@@ -142,9 +142,14 @@ li {
 .navbar-aligner {
   width: 175px;
   display: flex;
-  flex-direction: row;
   justify-content: space-between;
-  align-items: center;
+}
+
+@media (max-width: 600px) {
+  .navbar-aligner {
+    flex-direction: column-reverse;
+    justify-content: flex-end;
+  }
 }
 
 .settings-button {
@@ -184,3 +189,7 @@ li {
   text-align: center;
   width: 80px;
 }
+
+/* .log-out-button {
+  height: 40px;
+} */

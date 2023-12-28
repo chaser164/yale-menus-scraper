@@ -90,7 +90,7 @@ function App() {
             {user ? 
               <div className="navbar-aligner">
                 <button className="settings-button" onClick={() => navigate("/settings")}>⚙</button>
-                <button className={!logoutLoading ? "styled-button" : "styled-button-disabled"} disabled={logoutLoading} onClick={logOut}>Log Out</button>
+                <button className={!logoutLoading ? "styled-button log-out-button" : "styled-button-disabled"} disabled={logoutLoading} onClick={logOut}>Log Out</button>
               </div> :
               <>
                 <Link className="nav-links" to="/signup">Sign Up</Link>
