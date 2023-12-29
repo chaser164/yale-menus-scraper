@@ -1,7 +1,8 @@
 # Yale Menus Scraper
 
-## **TODO:**
-- Configure cookie auth
+Welcome to Yale Menus Scraper, a full stack web app that allows Yale eaters to configure personalized food alerts! 
+
+Every day at 6AM EST, the web app runs a (case insensitive) scrape of every Yale residential college dining hall menu. Users will then receive a personalized email digest detailing which of their specified food items are present in the day's menus.
 
 ## **API ENDPOINTS**
 
