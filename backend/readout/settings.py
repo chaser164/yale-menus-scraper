@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-a)_xid$aaie_z#kb)q=+8&jp34ci&*1%kj-)v$*ezz5v591g37'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['https://www.yale-menus-scraper.com', '127.0.0.1']
 
