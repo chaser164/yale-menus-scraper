@@ -215,7 +215,7 @@ export const HomePage = () => {
       !verified ? 
       <>
         <form onSubmit={(e) => validate(e)}>
-          <h3 className="white-font center">Enter verification code sent to {user.email}:</h3>
+          <h3 className="white-font center">Enter verification code sent to {user.email} <br/>(be sure to check spam):</h3>
           <input
             className="field"
             placeholder="Code"
@@ -223,7 +223,7 @@ export const HomePage = () => {
             value={code}
             onChange={(e) => setCode(e.target.value)}
           />
-          <p className="warning-text">{message}</p>
+          <p className="warning-text center">{message}</p>
           <input className={disableButton ? "styled-button-disabled" : "styled-button"} type="submit" disabled={disableButton} />
         </form>
         <button onClick={resend} className={disableResend ? "styled-button-disabled wide" : "styled-button wide"} disabled={disableResend}>Resend email {disableResend && `(${clock})`}</button>

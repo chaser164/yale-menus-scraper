@@ -17,19 +17,19 @@ export const SettingsPage = () => {
     }
     setLoading(true);
     try {
-      await api.delete("users/me");
+      await api.delete("users/me/");
+      // set the user using with useContext to allow all other pages that need user information
+      setUser(null);
+      // set verified to false after logout
+      setVerified(false);
+      navigate("/login");
+      setLoading(false);
     }
     catch {
       setWarningMessage("Deletion attempt failed");
       setLoading(false);
       return;
     }
-    // set the user using with useContext to allow all other pages that need user information
-    setUser(null);
-    // set verified to false after logout
-    setVerified(false);
-    navigate("/login");
-    setLoading(false);
   }
 
   const changeDangerVis = (state) => {

@@ -94,7 +94,6 @@ class A_user(APIView):
         request.user.auth_token.delete()
         response = Response(status=HTTP_204_NO_CONTENT)
         response.delete_cookie("token")
-        request.user.auth_token.delete()
         request.user.delete()
         return response
         
