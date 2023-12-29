@@ -1,6 +1,6 @@
 # Yale Menus Scraper
 
-yale-menus-scraper.com
+[yale-menus-scraper.com](yale-menus-scraper.com)
 
 Welcome to Yale Menus Scraper, a full stack web app that allows Yale eaters to configure personalized food alerts! 
 
