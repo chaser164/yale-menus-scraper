@@ -8,20 +8,20 @@ from user_app.models import User
 from twilio.rest import Client
 
 colleges = {
-    'BK':'Berkeley ',
-    'BR':'Branford ',
-    'SB':'Saybrook ',
+    'BK':'   Berkeley ',
+    'BR':'   Branford ',
+    'SB':'  Saybrook ',
     'DP':'Davenport ',
-    'ES':'Stiles ',
-    'MO':'Morse ',
-    'BF':'Franklin ',
-    'PM':'Murray ',
-    'GH':'Hopper ',
-    'JE':'JE ',
-    'PS':'Pierson ',
-    'SM':'Silliman ',
-    'TD':'TD ',
-    'TB':'Trumbull '
+    'ES':'        Stiles ',
+    'MO':'       Morse ',
+    'BF':'    Franklin ',
+    'PM':'     Murray ',
+    'GH':'    Hopper ',
+    'JE':'             JE ',
+    'PS':'    Pierson ',
+    'SM':'    Silliman ',
+    'TD':'             TD ',
+    'TB':'   Trumbull '
 }
 
 # def send_emails():
@@ -55,51 +55,43 @@ def send_texts():
     users = User.objects.filter(verification="verified", prefs__isnull=False).distinct()
     for user in users:
         # Send a text to each user
-        account_sid = 'ACcb94a77d070d8e1e065eb9c0e9647142'
-        load_dotenv()
-        auth_token = os.getenv('AUTH_TOKEN')
-        client = Client(account_sid, auth_token)
-        message = client.messages.create(
-        messaging_service_sid='MG111ded7875b2fa3b99d8688c939a8843',
-            body=build_message_string(user.prefs),
-            to=f'+{user.phone}'
-        )
-    print("All texts sent!")
+        text(user, f"""Your {datetime.now().month}/{datetime.now().day} Yale Menus Scrape:\n\n
+            ⏰ = breakfast menu\n
+            ☀️ = brunch/lunch menu\n
+            🌙 = dinner menu\n\n
+        """)
+        for pref in user.prefs.all():
+            text(user, build_message_string(pref))
+        print(f'texts sent to {user.phone}')
+    print('All texts sent!')
 
 
-def build_message_string(user_prefs):
-    all_results = ''
-    for pref in user_prefs.all():
-        found_anywhere = False
-        result = f'Yale Menus Scraper results for {pref.pref_string}:\n\n'
-        for col in colleges:
-            found_in_college = False
-            col_string = colleges[col]
-            if col in pref.breakfast:
-                found_in_college = True
-                col_string += '⏰'
-            else:
-                col_string += '  '
-            if col in pref.brunch_lunch:
-                found_in_college = True
-                col_string += '☀️'
-            else:
-                col_string += '  '
-            if col in pref.dinner:
-                found_in_college = True
-                col_string += '🌙'
-            else:
-                col_string += '  '
-            # Ensure found in college
-            if found_in_college:
-                found_anywhere = True
-                result += col_string + '\n'
-        if found_anywhere:
-            all_results += result + '\n\n'
+def build_message_string(pref):
+    blank_emoji = '     '
+    result = f'{datetime.now().month}/{datetime.now().day} results for "{pref.pref_string}":\n\n'
+    for col in colleges:
+        found_in_college = False
+        col_string = colleges[col]
+        if col in pref.breakfast:
+            found_in_college = True
+            col_string += '⏰'
         else:
-            all_results += f'No results for "{pref.pref_string}"\n'
+            col_string += blank_emoji
+        if col in pref.brunch_lunch:
+            found_in_college = True
+            col_string += '☀️'
+        else:
+            col_string += blank_emoji
+        if col in pref.dinner:
+            found_in_college = True
+            col_string += '🌙'
+        else:
+            col_string += blank_emoji
+        result += col_string + '\n'
 
-    return all_results
+    if not found_in_college:
+        result = f'No results on {datetime.now().month}/{datetime.now().day} for "{pref.pref_string}"\n\n'
+    return result
 
 
 def build_message_html(user_prefs):
@@ -158,3 +150,14 @@ def build_message_html(user_prefs):
     </body>
     </html>
     """
+
+def text(user, body):
+    account_sid = 'ACcb94a77d070d8e1e065eb9c0e9647142'
+    load_dotenv()
+    auth_token = os.getenv('AUTH_TOKEN')
+    client = Client(account_sid, auth_token)
+    message = client.messages.create(
+    messaging_service_sid='MG111ded7875b2fa3b99d8688c939a8843',
+        body=body,
+        to=f'+{user.phone}'
+    )
