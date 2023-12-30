@@ -13,7 +13,7 @@ from dotenv import load_dotenv
 EXPIRATION_TIME = 300
 
 class User(AbstractUser):
-    phone = models.PositiveBigIntegerField()
+    phone = models.PositiveBigIntegerField(unique=True)
     verification_timestamp = models.DateTimeField(auto_now_add=True)
     reset_timestamp = models.DateTimeField(auto_now_add=True)
     verification = models.TextField(max_length=500, default='')
@@ -98,9 +98,7 @@ class User(AbstractUser):
             self.verification = hashed_code
         self.save()
         return f"""
-            Yale Menus Scraper account activation:
-            {"password reset" if for_reset else "account activation"}\n
-            {str(code)}
+            Your Yale Menus Scraper {"password reset" if for_reset else "account activation"} code is {str(code)}
         """
 
     @staticmethod

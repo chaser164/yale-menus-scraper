@@ -10,6 +10,7 @@ from rest_framework.status import (
     HTTP_401_UNAUTHORIZED,
     HTTP_400_BAD_REQUEST,
 )
+from django.db import IntegrityError
 from rest_framework.authtoken.models import Token
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -25,8 +26,13 @@ class Sign_up(APIView):
         # Add user attempt
         try:
             user = User.objects.create_user(**request.data)
-        except:
-            return Response({"message": "Username already in use"}, status=HTTP_400_BAD_REQUEST)
+        except IntegrityError as e:
+            if 'unique constraint' in str(e).lower() and 'username' in str(e).lower():
+                return Response({"message": "Username already in use"}, status=HTTP_400_BAD_REQUEST)
+            elif 'unique constraint' in str(e).lower() and 'phone' in str(e).lower():
+                return Response({"message": "Phone number already in use"}, status=HTTP_400_BAD_REQUEST)
+            else:
+                return Response({"message": "Unknown error"}, status=HTTP_400_BAD_REQUEST)
         # Send text attempt
         try:
             user.send_text(False)
@@ -43,7 +49,12 @@ class Sign_up(APIView):
 class Log_in(APIView):
 
     def post(self, request):
-        username = request.data.get("username")
+        if "username" in request.data and request.data["username"]:
+            username = request.data.get("username")
+        elif "phone" in request.data and request.data["phone"]:
+            username = get_object_or_404(User, phone=request.data.get("phone")).username
+        else:
+            return Response({"message": "Error in body"}, status=HTTP_400_BAD_REQUEST)
         password = request.data.get("password")
         user = authenticate(username=username, password=password)
         if user:
@@ -129,7 +140,7 @@ class Resend(APIView):
 class InitiateReset(APIView):
 
     def post(self, request):
-        user = get_object_or_404(User, username=request.data["username"])
+        user = get_object_or_404(User, phone=request.data["phone"])
         try:
             user.send_text(True)
         except:
@@ -145,7 +156,7 @@ class InitiateReset(APIView):
 class ValidateReset(APIView):
 
     def post(self, request):
-        user = get_object_or_404(User, username=request.data['phone'])
+        user = get_object_or_404(User, phone=request.data['phone'])
         code = request.data['code']
         message = user.check_code(code, True)
         is_valid = message == "valid code"
