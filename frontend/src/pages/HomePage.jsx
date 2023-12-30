@@ -238,7 +238,7 @@ export const HomePage = () => {
           which of your specified food items are present in the day's menus.
         </h4>
         <h3 className="white-font">
-          Your Food Items:
+          Your Food Items (maximum of 4):
         </h3>
         {!loading ? 
           <ul>
@@ -254,8 +254,8 @@ export const HomePage = () => {
             <p className="warning-text">{warningMessage}</p>
             {!showAdd && !showRemove ?
             <>
-              {/* Cap the list at 5 */}
-              {prefsList.length < 5 && 
+              {/* Cap the list at 4 */}
+              {prefsList.length < 4 && 
                 <button onClick={() => changeAddVis(true)} className="styled-button">Add Food</button>
               }
               {prefsList.length > 0 && 

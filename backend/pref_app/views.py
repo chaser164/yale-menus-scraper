@@ -25,6 +25,8 @@ class All_prefs(APIView):
         return Response(allSerializedPosts)
     
     def post(self, request):
+        if request.user.prefs.count() >= 4:
+            return Response("Maximum limit reached", status=HTTP_400_BAD_REQUEST)
         try:
             new_pref = Pref(user = request.user, pref_string = request.data['pref_string'])
         except:
