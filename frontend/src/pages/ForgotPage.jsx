@@ -4,7 +4,7 @@ import { ResetPasswordForm } from "../components/ResetPasswordForm.jsx";
 
 export const ForgotPage = () => {
   const [warningText, setWarningText] = useState("");
-  const [userName, setUserName] = useState("");
+  const [phone, setPhone] = useState("");
   const [disableButton, setDisableButton] = useState(false);
   const [showReset, setShowReset] = useState(false);
 
@@ -15,7 +15,7 @@ export const ForgotPage = () => {
     let response;
     try {
       response = await api.post("users/init-reset/", {
-        email: userName,
+        phone: phone,
       });
       setDisableButton(false);
       setShowReset(true);
@@ -39,7 +39,7 @@ export const ForgotPage = () => {
     let response;
     try {
       response = await api.post("users/validate-reset/", {
-        email: userName,
+        phone: phone,
         code: code,
         password: password,
       });
@@ -62,13 +62,13 @@ export const ForgotPage = () => {
         className="field"
         placeholder="Email"
         type="email"
-        value={!showReset ? userName : ""}
-        onChange={(e) => setUserName(e.target.value)}
+        value={!showReset ? phone : ""}
+        onChange={(e) => setPhone(e.target.value)}
       />
       <p className="warning-text const-height center">{warningText}</p>
       <input className={disableButton ? "styled-button-disabled" : "styled-button"} type="submit" disabled={disableButton} />
     </form>
     :
-    <ResetPasswordForm email={userName} />
+    <ResetPasswordForm email={phone} />
   );
 };

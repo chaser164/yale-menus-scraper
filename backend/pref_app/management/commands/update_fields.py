@@ -5,7 +5,7 @@ from selenium.webdriver.common.by import By
 from selenium import webdriver
 from django.core.management.base import BaseCommand
 from pref_app.models import Pref
-from .email import send_emails
+# from .email import send_emails
 
 LOAD_TIME = 0.15
 
@@ -91,5 +91,5 @@ class Command(BaseCommand):
         driver.quit()
         print('fields update complete!')
 
-        send_emails()
+        # send_emails()
         

@@ -107,10 +107,10 @@ export const HomePage = () => {
     }
     catch {
       setDisableResend(false);
-      setMessage("Error sending email, Try again");
+      setMessage("Error sending text, Try again");
       return;
     }
-    // Disable email button for 30 seconds
+    // Disable text button for 30 seconds
     timer(30);
   }; 
 
@@ -215,7 +215,7 @@ export const HomePage = () => {
       !verified ? 
       <>
         <form onSubmit={(e) => validate(e)}>
-          <h3 className="white-font center">Enter verification code sent to {user.email} <br/>(be sure to check spam):</h3>
+          <h3 className="white-font center">Enter verification code sent to {user.phone} <br/>(be sure to check spam):</h3>
           <input
             className="field"
             placeholder="Code"
@@ -226,14 +226,14 @@ export const HomePage = () => {
           <p className="warning-text center">{message}</p>
           <input className={disableButton ? "styled-button-disabled" : "styled-button"} type="submit" disabled={disableButton} />
         </form>
-        <button onClick={resend} className={disableResend ? "styled-button-disabled wide" : "styled-button wide"} disabled={disableResend}>Resend email {disableResend && `(${clock})`}</button>
+        <button onClick={resend} className={disableResend ? "styled-button-disabled wide" : "styled-button wide"} disabled={disableResend}>Resend text {disableResend && `(${clock})`}</button>
       </>
       :
       <div>
         <h4 className="grey-font">
           Every day at 6AM EST, I will run a (case insensitive) 
           scrape of every Yale residential college dining hall menu. 
-          You will then receive a personalized email digest detailing 
+          You will then receive a personalized SMS digest detailing 
           which of your specified food items are present in the day's menus.
         </h4>
         <h2 className="white-font">

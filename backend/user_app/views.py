@@ -22,37 +22,36 @@ from .serializers import UserSerializer
 class Sign_up(APIView):
     
     def post(self, request):
-        request.data["username"] = request.data["email"]
         # Add user attempt
         try:
             user = User.objects.create_user(**request.data)
         except:
-            return Response({"message": "Email already in use"}, status=HTTP_400_BAD_REQUEST)
-        # Send email attempt
+            return Response({"message": "Username already in use"}, status=HTTP_400_BAD_REQUEST)
+        # Send text attempt
         try:
-            user.send_email(False)
+            user.send_text(False)
         except:
             user.delete()
-            return Response({"message": "Error sending email, try again"}, status=HTTP_400_BAD_REQUEST)
+            return Response({"message": "Error sending text, try again"}, status=HTTP_400_BAD_REQUEST)
         token = Token.objects.create(user=user)
         life_time = datetime.now() + timedelta(days=7)
         format_life_time = life_time.strftime("%a, %d %b %Y %H:%M:%S GMT")
         response = Response({"user": UserSerializer(user).data})
-        response.set_cookie(key="token", value=token.key, httponly=True, secure=True, samesite="Strict", expires=format_life_time)
+        response.set_cookie(key="token", value=token.key, httponly=True, secure=True, samesite="None", expires=format_life_time)
         return response
     
 class Log_in(APIView):
 
     def post(self, request):
-        email = request.data.get("email")
+        username = request.data.get("username")
         password = request.data.get("password")
-        user = authenticate(username=email, password=password)
+        user = authenticate(username=username, password=password)
         if user:
             token, _ = Token.objects.get_or_create(user=user)
             life_time = datetime.now() + timedelta(days=7)
             format_life_time = life_time.strftime("%a, %d %b %Y %H:%M:%S GMT")
             response = Response({"user": UserSerializer(user).data})
-            response.set_cookie(key="token", value=token.key, httponly=True, secure=True, samesite="Strict", expires=format_life_time)
+            response.set_cookie(key="token", value=token.key, httponly=True, secure=True, samesite="None", expires=format_life_time)
             return response
         else:
             return Response({"message": "No user matching credentials"}, status=HTTP_404_NOT_FOUND)
@@ -65,7 +64,7 @@ class Log_out(APIView):
     def post(self, request):
         request.user.auth_token.delete()
         response = Response(status=HTTP_204_NO_CONTENT)
-        response.delete_cookie("token", samesite="Strict")
+        response.delete_cookie("token", samesite="None")
         return response
 
 
@@ -116,37 +115,37 @@ class Resend(APIView):
    
     def post(self, request):
         try:
-            request.user.send_email(False)
+            request.user.send_text(False)
         except:
             return Response(
-                {"message": "Error sending email. Try again."},
+                {"message": "Error sending text. Try again."},
                 status=HTTP_400_BAD_REQUEST
             )
         return Response(
-            {"message": "Email sent!"}
+            {"message": "Text sent!"}
         )
 
 
 class InitiateReset(APIView):
 
     def post(self, request):
-        user = get_object_or_404(User, email=request.data["email"])
+        user = get_object_or_404(User, username=request.data["username"])
         try:
-            user.send_email(True)
+            user.send_text(True)
         except:
             return Response(
-                {"message": "Error sending email, try again"},
+                {"message": "Error sending text, try again"},
                 status=HTTP_400_BAD_REQUEST
             )
         return Response(
-            {"message": "Email sent!"}
+            {"message": "Text sent!"}
         )
     
     
 class ValidateReset(APIView):
 
     def post(self, request):
-        user = get_object_or_404(User, email=request.data['email'])
+        user = get_object_or_404(User, username=request.data['phone'])
         code = request.data['code']
         message = user.check_code(code, True)
         is_valid = message == "valid code"

@@ -8,6 +8,7 @@ export const RegisterPage = () => {
   const [disableButton, setDisableButton] = useState(false);
   const [warningText, setWarningText] = useState("");
   const [userName, setUserName] = useState("");
+  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConf, setPasswordConf] = useState("");
   const navigate = useNavigate();
@@ -19,11 +20,6 @@ export const RegisterPage = () => {
     // Guards
     if(userName.length == 0 || password.length == 0 || passwordConf.lengh == 0) {
       setWarningText("All fields must be populated");
-      return;
-    }
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(userName)) {
-      setWarningText("Invalid email format");
       return;
     }
     if(password != passwordConf) {
@@ -38,7 +34,8 @@ export const RegisterPage = () => {
     let response;
     try {
       response = await api.post("users/signup/", {
-        email: userName,
+        username: userName,
+        phone: phone,
         password: password,
       });
     }
@@ -58,10 +55,17 @@ export const RegisterPage = () => {
       <h3 className="white-font label">Sign Up</h3>
       <input
         className="field"
-        placeholder="Email"
-        type="email"
+        placeholder="Username"
+        type="text"
         value={userName}
         onChange={(e) => setUserName(e.target.value)}
+      />
+      <input
+        className="field"
+        placeholder="Phone Number"
+        type="text"
+        value={phone}
+        onChange={(e) => setPhone(e.target.value)}
       />
       <input
         className="field"

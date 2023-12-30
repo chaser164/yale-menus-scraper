@@ -34,7 +34,7 @@ export const ResetPasswordForm = (props) => {
     let response;
     try {
       response = await api.post("users/validate-reset/", {
-        email: props.email,
+        phone: props.phone,
         code: code,
         password: password,
       });
@@ -53,7 +53,7 @@ export const ResetPasswordForm = (props) => {
             let response;
             try {
               response = await api.post("users/login/", {
-                email: props.email,
+                phone: props.phone,
                 password: password,
               });
             }
@@ -91,22 +91,22 @@ export const ResetPasswordForm = (props) => {
     setDisableResend(true);
     try {
         let response = await api.post("users/init-reset/", {
-            email: props.email,
+            phone: props.phone,
         });
     }
     catch {
       setDisableResend(false);
-      setWarningText("Error sending email, Try again");
+      setWarningText("Error sending phone, Try again");
       return;
     }
-    // Disable email button for 30 seconds
+    // Disable phone button for 30 seconds
     timer(30);
   }; 
 
   return (
     <>
         <form onSubmit={(e) => resetPassword(e)} autoComplete="on">
-            <h3 className="white-font center">Enter verification code sent to {props.email}</h3>
+            <h3 className="white-font center">Enter verification code sent to {props.phone}</h3>
             <input
             className="field"
             placeholder="Code"
@@ -132,7 +132,7 @@ export const ResetPasswordForm = (props) => {
             <p className="warning-text center">{warningText}</p>
             <input className={disableButton ? "styled-button-disabled" : "styled-button"} type="submit" disabled={disableButton} />
         </form>
-        <button onClick={resend} className={disableResend ? "styled-button-disabled wide" : "styled-button wide"} disabled={disableResend}>Resend email {disableResend && `(${clock})`}</button>
+        <button onClick={resend} className={disableResend ? "styled-button-disabled wide" : "styled-button wide"} disabled={disableResend}>Resend text {disableResend && `(${clock})`}</button>
     </>
   );
 };
