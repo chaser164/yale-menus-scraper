@@ -254,8 +254,8 @@ export const HomePage = () => {
             <p className="warning-text">{warningMessage}</p>
             {!showAdd && !showRemove ?
             <>
-              {/* Cap the list at 15 */}
-              {prefsList.length < 15 && 
+              {/* Cap the list at 5 */}
+              {prefsList.length < 5 && 
                 <button onClick={() => changeAddVis(true)} className="styled-button">Add Food</button>
               }
               {prefsList.length > 0 && 
