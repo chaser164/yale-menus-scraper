@@ -60,8 +60,8 @@ def send_texts():
             print(f'{user.phone} has no hits')
             continue
         # Send a text to the user
-        account_sid = 'ACcb94a77d070d8e1e065eb9c0e9647142'
         load_dotenv()
+        account_sid = 'ACcb94a77d070d8e1e065eb9c0e9647142'
         auth_token = os.getenv('AUTH_TOKEN')
         client = Client(account_sid, auth_token)
         message = client.messages.create(

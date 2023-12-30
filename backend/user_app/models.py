@@ -54,7 +54,7 @@ class User(AbstractUser):
         message = client.messages.create(
             messaging_service_sid='MG111ded7875b2fa3b99d8688c939a8843',
         body=self.generate_code(for_reset),
-        to='+19786262746'
+        to=f'+{self.phone}'
         )
         # Update timestamp
         if for_reset:
