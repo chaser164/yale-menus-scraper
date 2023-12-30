@@ -230,15 +230,16 @@ export const HomePage = () => {
       </>
       :
       <div>
+        <h2 className="white-font">Welcome, {user.username}</h2>
         <h4 className="grey-font">
           Every day at 6AM EST, I will run a (case insensitive) 
           scrape of every Yale residential college dining hall menu. 
           You will then receive a personalized SMS digest detailing 
           which of your specified food items are present in the day's menus.
         </h4>
-        <h2 className="white-font">
+        <h3 className="white-font">
           Your Food Items:
-        </h2>
+        </h3>
         {!loading ? 
           <ul>
             {prefsList.map((pref, index) => (
@@ -253,8 +254,8 @@ export const HomePage = () => {
             <p className="warning-text">{warningMessage}</p>
             {!showAdd && !showRemove ?
             <>
-              {/* Cap the list at 50 */}
-              {prefsList.length <= 50 && 
+              {/* Cap the list at 15 */}
+              {prefsList.length < 15 && 
                 <button onClick={() => changeAddVis(true)} className="styled-button">Add Food</button>
               }
               {prefsList.length > 0 && 
