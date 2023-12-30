@@ -255,7 +255,7 @@ export const HomePage = () => {
             {!showAdd && !showRemove ?
             <>
               {/* Cap the list at 4 */}
-              {prefsList.length < 4 && 
+              {prefsList.length < 5 && 
                 <button onClick={() => changeAddVis(true)} className="styled-button">Add Food</button>
               }
               {prefsList.length > 0 && 
