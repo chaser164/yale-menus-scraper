@@ -25,7 +25,7 @@ export const LoginPage = () => {
     let response;
     try {
       response = await api.post("users/login/", {
-        email: userName,
+        username: userName,
         password: password,
       });
     }
@@ -47,8 +47,8 @@ export const LoginPage = () => {
       <h3 className="white-font label">Log In</h3>
       <input
         className="field"
-        placeholder="Email"
-        type="email"
+        placeholder="Username"
+        type="text"
         value={userName}
         onChange={(e) => setUserName(e.target.value)}
       />

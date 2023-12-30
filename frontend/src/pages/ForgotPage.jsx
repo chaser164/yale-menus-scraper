@@ -17,13 +17,14 @@ export const ForgotPage = () => {
       response = await api.post("users/init-reset/", {
         phone: phone,
       });
+      console.log(response)
       setDisableButton(false);
       setShowReset(true);
     }
     catch (error) {
         setDisableButton(false);
         if(error.response.status == 404) {
-            setWarningText("Email not found");      
+            setWarningText("Phone number not found");      
         }
         else if(error.response.status == 400) {
             setWarningText(error.response.data.message)
@@ -57,11 +58,11 @@ export const ForgotPage = () => {
   return (
     !showReset ? 
     <form className="invisible" onSubmit={(e) => initReset(e)} autoComplete="on">
-      <h3 className="white-font">Enter Your Email</h3>
+      <h3 className="white-font">Enter Your Phone Number</h3>
       <input
         className="field"
-        placeholder="Email"
-        type="email"
+        placeholder="Phone Number"
+        type="text"
         value={!showReset ? phone : ""}
         onChange={(e) => setPhone(e.target.value)}
       />
@@ -69,6 +70,6 @@ export const ForgotPage = () => {
       <input className={disableButton ? "styled-button-disabled" : "styled-button"} type="submit" disabled={disableButton} />
     </form>
     :
-    <ResetPasswordForm email={phone} />
+    <ResetPasswordForm phone={phone} />
   );
 };
