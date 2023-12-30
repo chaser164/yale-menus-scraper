@@ -232,13 +232,13 @@ export const HomePage = () => {
       <div>
         <h2 className="white-font">Welcome, {user.username}</h2>
         <h4 className="grey-font">
-          Every day at 6AM EST, I will run a (case insensitive) 
+          Every day at 4AM EST, I will run a (case insensitive) 
           scrape of every Yale residential college dining hall menu. 
-          You will then receive a personalized SMS digest detailing 
-          which of your specified food items are present in the day's menus.
+          If any of your specified food items are present in the day's menus, 
+          You will receive a text with location details.
         </h4>
         <h3 className="white-font">
-          Your Food Items (maximum of 4):
+          Your Food Items (Maximum of 4):
         </h3>
         {!loading ? 
           <ul>

@@ -89,7 +89,9 @@ function App() {
           <nav>
             {user ? 
               <div className="navbar-aligner">
-                <button className="settings-button" onClick={() => navigate("/settings")}>⚙</button>
+                <button className="settings-button" onClick={() => navigate("/settings")}>
+                  <img src={"gear.png"} alt="Gear" className="gear-image" />
+                </button>
                 <button className={!logoutLoading ? "styled-button log-out-button" : "styled-button-disabled"} disabled={logoutLoading} onClick={logOut}>Log Out</button>
               </div> :
               <>

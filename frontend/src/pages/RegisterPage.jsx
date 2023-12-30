@@ -2,6 +2,8 @@ import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { userContext } from "../App";
 import { api } from "../utilities.jsx";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 
 export const RegisterPage = () => {
   const { setUser } = useContext(userContext);
@@ -18,7 +20,7 @@ export const RegisterPage = () => {
     e.preventDefault();
     setWarningText("");
     // Guards
-    if(userName.length == 0 || password.length == 0 || passwordConf.lengh == 0) {
+    if(userName.length == 0 || phone.length == 0 || password.length == 0 || passwordConf.lengh == 0) {
       setWarningText("All fields must be populated");
       return;
     }
@@ -60,13 +62,14 @@ export const RegisterPage = () => {
         value={userName}
         onChange={(e) => setUserName(e.target.value)}
       />
-      <input
-        className="field"
-        placeholder="Phone Number"
-        type="text"
-        value={phone}
-        onChange={(e) => setPhone(e.target.value)}
-      />
+      <div>
+        <PhoneInput
+          containerClass="phone-input"
+          country={'us'}
+          onEnterKeyPress={(e) => signUp(e)}
+          onChange={(phone) => setPhone(phone)}
+        />
+      </div>
       <input
         className="field"
         placeholder="Password"

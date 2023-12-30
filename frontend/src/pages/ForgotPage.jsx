@@ -1,6 +1,8 @@
 import { api } from "../utilities.jsx";
 import { useState } from "react";
 import { ResetPasswordForm } from "../components/ResetPasswordForm.jsx";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 
 export const ForgotPage = () => {
   const [warningText, setWarningText] = useState("");
@@ -11,6 +13,11 @@ export const ForgotPage = () => {
   const initReset = async (e) => {
     e.preventDefault();
     setWarningText("");
+    // Guard
+    if(phone.length == 0) {
+      setWarningText("Field cannot be blank");
+      return
+    }
     setDisableButton(true)
     let response;
     try {
@@ -59,13 +66,14 @@ export const ForgotPage = () => {
     !showReset ? 
     <form className="invisible" onSubmit={(e) => initReset(e)} autoComplete="on">
       <h3 className="white-font">Enter Your Phone Number</h3>
-      <input
-        className="field"
-        placeholder="Phone Number"
-        type="text"
-        value={!showReset ? phone : ""}
-        onChange={(e) => setPhone(e.target.value)}
-      />
+      <div>
+        <PhoneInput
+          containerClass="phone-input"
+          country={'us'}
+          onEnterKeyPress={(e) => initReset(e)}
+          onChange={(phone) => setPhone(phone)}
+        />
+      </div>
       <p className="warning-text const-height center">{warningText}</p>
       <input className={disableButton ? "styled-button-disabled" : "styled-button"} type="submit" disabled={disableButton} />
     </form>

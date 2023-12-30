@@ -48,7 +48,7 @@ ol li a {
   padding: 5px;
   border: 2px solid rgb(0, 0, 60);;
   border-radius: 5px;
-  width: 200px;
+  width: 290px;
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
@@ -153,6 +153,7 @@ li {
     display: flex;
     flex-direction: column-reverse;
     align-items: flex-end;
+    justify-content: space-between;
   }
 }
 
@@ -196,4 +197,14 @@ li {
 
 input {
   -webkit-text-size-adjust: none; /* Disable autozoom on iPhone */
+}
+
+.phone-input {
+  margin-top: 1.5px;
+  margin-bottom: 1.5px;
+}
+
+.gear-image {
+  height: 35px;
+  width: 35px;
 }
