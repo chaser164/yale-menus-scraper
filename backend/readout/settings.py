@@ -140,7 +140,7 @@ REST_FRAMEWORK = {
     ],
 }
 # On the same site, no cors needed
-# CORS_ALLOW_ALL_ORIGINS = False
+# CORS_ALLOW_ALL_ORIGINS = True
 
 # CORS_ALLOWED_ORIGINS = [
 #     'http://localhost:5173', #development server
