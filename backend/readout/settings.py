@@ -28,7 +28,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['www.yale-menus-scraper.com', '127.0.0.1']
+ALLOWED_HOSTS = ['www.yale-menus-scraper.com']
 
 
 # Application definition
@@ -139,7 +139,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ],
 }
-
+# On the same site, no cors needed
 # CORS_ALLOW_ALL_ORIGINS = False
 
 # CORS_ALLOWED_ORIGINS = [
