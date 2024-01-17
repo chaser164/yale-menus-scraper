@@ -93,8 +93,8 @@ export const RegisterPage = () => {
       <br />
       <h4 className="white-font label-wide medium-text">Texting Opt-In</h4>
       <p className="white-font label-wide small-text">
-        By suppying your phone number, you are opting in to receiving text notifications whenever 
-        your selected food preferences are present in Yale dining halls. To opt out, simply delete your account in settings.
+        By suppying your phone number, you are opting in to receiving text notifications for 2-factor authentication and also 
+        whenever your selected food preferences are present in Yale dining halls. To opt out, simply delete your account in settings.
       </p>
       <div>
         <input
