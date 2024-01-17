@@ -48,17 +48,40 @@ class Command(BaseCommand):
                 view_button.click()
                 # Allow time for the menu loading animation
                 driver.implicitly_wait(10)
-                meals = driver.find_elements(By.CLASS_NAME, "v-captiontext")
+                meals = driver.find_elements(By.CLASS_NAME, "v-tabsheet-tabitemcell")
+                # Create scrollers if need be
+                prev_scroller = None
+                next_scroller = None
+                try:
+                    driver.implicitly_wait(5)
+                    prev_scroller = driver.find_element(By.CLASS_NAME, 'v-tabsheet-scrollerPrev')
+                    next_scroller = driver.find_element(By.CLASS_NAME, 'v-tabsheet-scrollerNext-disabled')
+                except:
+                    pass
             except:
                 print(f'timeout while entering{menu} menu')
                 driver.quit()
                 return
-            
             page_source_dict_lst = [{'id': '<title>Breakfast', 'visited' : False, 'src': ''},
                                     {'id': '<title>Brunch and Lunch', 'visited' : False, 'src': ''},
                                     {'id': '<title>Dinner', 'visited' : False, 'src': ''}]
             for meal in meals:
-                meal.click()
+                # Scroll until found; click
+                clicked = False
+                scroll_count = 0
+                while(not clicked):
+                    try:
+                        meal.click()
+                        clicked = True
+                    except:
+                        if(prev_scroller == None or next_scroller == None):
+                            print('ERROR: no scrollers found, yet item not visible')
+                            return
+                        prev_scroller.click()
+                        scroll_count += 1
+                # reset scroll
+                for _ in range(scroll_count):
+                    next_scroller.click()
                 total = 0
                 while True:
                     # Sleep a bit
