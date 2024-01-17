@@ -13,6 +13,7 @@ export const RegisterPage = () => {
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConf, setPasswordConf] = useState("");
+  const [optIn, setOptIn] = useState(false);
   const navigate = useNavigate();
 
 
@@ -30,6 +31,10 @@ export const RegisterPage = () => {
     }
     if(password.length < 8) {
       setWarningText("Password must be at least 8 characters");
+      return;
+    }
+    if(!optIn) {
+      setWarningText("Must agree with texting terms");
       return;
     }
     setDisableButton(true);
@@ -85,6 +90,22 @@ export const RegisterPage = () => {
         onChange={(e) => setPasswordConf(e.target.value)}
       />
       <p className="warning-text center">{warningText}</p>
+      <br />
+      <h4 className="white-font label-wide medium-text">Texting Opt-In</h4>
+      <p className="white-font label-wide small-text">
+        By suppying your phone number, you are opting in to receiving text notifications whenever 
+        your selected food preferences are present in Yale dining halls. To opt out, simply delete your account in settings.
+      </p>
+      <div>
+        <input
+          aria-label="hello"
+          type="checkbox"
+          checked={optIn}
+          onChange={() => setOptIn(!optIn)}
+        />
+        <label className="white-font">I understand </label>
+      </div>
+      <br />
       <input className={disableButton ? "styled-button-disabled" : "styled-button"} type="submit" disabled={disableButton} />
     </form>
   );
