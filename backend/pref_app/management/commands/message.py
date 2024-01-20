@@ -6,6 +6,7 @@ import os
 from dotenv import load_dotenv
 from user_app.models import User
 from twilio.rest import Client
+from pref_app.models import Pref
 
 colleges = {
     'BK':'   Berkeley ',
@@ -72,6 +73,14 @@ def send_texts():
         print(f'text sent to {user.phone}')
     print('All texts sent!')
 
+    # Clear matches
+    prefs = Pref.objects.all()
+    for pref in prefs:
+        pref.breakfast = ''
+        pref.brunch_lunch = ''
+        pref.dinner = ''
+        pref.save()
+        
 
 def build_message_string(user_prefs):
     all_results = f"""Your {datetime.now().month}/{datetime.now().day} Yale Menus Scrape:\n\n
